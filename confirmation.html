@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Booking Request | LASH'D. by Sara</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .confirmation-page {
+            min-height: 100vh;
+            background: #f4eee8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+        }
+
+        .confirmation-card {
+            width: 100%;
+            max-width: 720px;
+            background: #fffaf6;
+            padding: 65px 55px;
+            text-align: center;
+            border: 1px solid rgba(80, 54, 41, 0.12);
+        }
+
+        .confirmation-eyebrow {
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            color: #765b4d;
+        }
+
+        .confirmation-card h1 {
+            margin: 0 0 22px;
+            font-size: clamp(42px, 7vw, 72px);
+            line-height: 0.95;
+            font-weight: 400;
+            color: #4d382e;
+        }
+
+        .confirmation-card h1 em {
+            font-weight: 400;
+        }
+
+        .confirmation-intro {
+            max-width: 540px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+            color: #66564e;
+            font-size: 15px;
+        }
+
+        .confirmation-status {
+            margin: 35px 0;
+            padding: 28px;
+            border-top: 1px solid rgba(80, 54, 41, 0.15);
+            border-bottom: 1px solid rgba(80, 54, 41, 0.15);
+        }
+
+        .confirmation-status span {
+            display: block;
+            font-size: 10px;
+            letter-spacing: 2px;
+            margin-bottom: 9px;
+            color: #8b7164;
+        }
+
+        .confirmation-status strong {
+            font-size: 18px;
+            font-weight: 500;
+            color: #4d382e;
+        }
+
+        .confirmation-steps {
+            text-align: left;
+            margin: 40px auto;
+            max-width: 520px;
+        }
+
+        .confirmation-step {
+            display: grid;
+            grid-template-columns: 45px 1fr;
+            gap: 18px;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(80, 54, 41, 0.1);
+        }
+
+        .confirmation-step-number {
+            width: 38px;
+            height: 38px;
+            border: 1px solid #765b4d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #765b4d;
+        }
+
+        .confirmation-step h3 {
+            margin: 0 0 6px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #4d382e;
+        }
+
+        .confirmation-step p {
+            margin: 0;
+            line-height: 1.6;
+            font-size: 13px;
+            color: #76675f;
+        }
+
+        .confirmation-important {
+            margin-top: 35px;
+            padding: 22px;
+            background: #eee3db;
+            font-size: 13px;
+            line-height: 1.7;
+            color: #5d493f;
+        }
+
+        .confirmation-important strong {
+            display: block;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+            font-size: 11px;
+        }
+
+        .confirmation-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 35px;
+            padding: 16px 30px;
+            background: #5b4135;
+            color: #fffaf6;
+            text-decoration: none;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            transition: opacity 0.2s ease;
+        }
+
+        .confirmation-home:hover {
+            opacity: 0.85;
+        }
+
+        @media (max-width: 600px) {
+            .confirmation-page {
+                padding: 25px 15px;
+            }
+
+            .confirmation-card {
+                padding: 45px 24px;
+            }
+
+            .confirmation-card h1 {
+                font-size: 48px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<header>
+
+    <a href="index.html" class="logo logo-link">
+    <img src="lashd-logo.png" alt="LASH'D. by Sara" class="header-logo">
+</a>
+
+    <nav>
+        <a href="index.html">HOME</a>
+        <a href="treatments.html">TREATMENTS</a>
+        <a href="index.html#gallery">GALLERY</a>
+        <a href="index.html#about">ABOUT</a>
+        <a href="policies.html">POLICIES</a>
+    </nav>
+
+    <a href="booking.html" class="nav-book">
+        BOOK NOW
+    </a>
+
+</header>
+    <main class="confirmation-page">
+
+        <section class="confirmation-card">
+
+            <p class="confirmation-eyebrow">
+                LASH'D. BY SARA
+            </p>
+
+            <h1>
+                Nearly<br>
+                <em>Booked.</em>
+            </h1>
+
+            <p class="confirmation-intro">
+                Your appointment details have been received.
+                Your selected date and time have been reserved while
+                you complete your £10 deposit.
+            </p>
+
+            <div class="confirmation-status">
+                <span>BOOKING STATUS</span>
+                <strong>Awaiting £10 Deposit</strong>
+            </div>
+
+            <div class="confirmation-steps">
+
+                <div class="confirmation-step">
+                    <div class="confirmation-step-number">01</div>
+
+                    <div>
+                        <h3>Complete your £10 deposit</h3>
+                        <p>
+                            Your non-refundable deposit is required
+                            to secure your appointment.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="confirmation-step">
+                    <div class="confirmation-step-number">02</div>
+
+                    <div>
+                        <h3>Your booking will be confirmed</h3>
+                        <p>
+                            Once your deposit has been received,
+                            your appointment can be confirmed.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="confirmation-step">
+                    <div class="confirmation-step-number">03</div>
+
+                    <div>
+                        <h3>Appointment address</h3>
+                        <p>
+                            The exact Manchester M8 address will be
+                            sent the day before your confirmed appointment.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="confirmation-important">
+                <strong>PLEASE NOTE</strong>
+
+                Opening the Spot payment page does not confirm your
+                appointment. Your £10 deposit must be successfully
+                received before your booking is secured.
+            </div>
+
+            <a href="index.html" class="confirmation-home">
+                RETURN HOME
+                <span>→</span>
+            </a>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>

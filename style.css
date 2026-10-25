@@ -1,0 +1,4122 @@
+/* =========================================================
+   LASH'D. BY SARA — COMPLETE WEBSITE STYLESHEET
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #f5eee6;
+    color: #4a2f25;
+    font-family: "DM Sans", sans-serif;
+}
+
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+.logo-link {
+    color: #4a2f25;
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header {
+    height: 100px;
+    padding: 0 6%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f5eee6;
+    border-bottom: 1px solid rgba(74, 47, 37, 0.15);
+    position: relative;
+    z-index: 10;
+}
+
+.logo {
+    text-align: center;
+}
+
+.logo h1 {
+    font-family: "Playfair Display", serif;
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: 2px;
+}
+
+.logo span {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 4px;
+}
+
+nav {
+    display: flex;
+    gap: 35px;
+}
+
+nav a {
+    color: #4a2f25;
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    transition: opacity 0.3s ease;
+}
+
+nav a:hover {
+    opacity: 0.5;
+}
+
+.nav-book {
+    background: #4a2f25;
+    color: #f5eee6;
+    text-decoration: none;
+    padding: 14px 24px;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    transition: 0.3s ease;
+}
+
+.nav-book:hover {
+    opacity: 0.8;
+}
+
+
+/* =========================================================
+   HOMEPAGE HERO
+   DO NOT CHANGE — WORKING HERO
+========================================================= */
+
+.hero {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.hero-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(47, 29, 22, 0.25);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 90%;
+    max-width: 850px;
+    color: #fffaf5;
+    text-align: center;
+}
+
+.location {
+    font-size: 10px;
+    letter-spacing: 4px;
+    margin-bottom: 22px;
+}
+
+.hero h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(55px, 7vw, 95px);
+    line-height: 0.95;
+    font-weight: 400;
+    margin-bottom: 26px;
+    text-shadow: 0 3px 25px rgba(0, 0, 0, 0.18);
+}
+
+.hero h2 em {
+    font-weight: 400;
+}
+
+.intro {
+    max-width: 440px;
+    margin: 0 auto 30px;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.8;
+    text-shadow: 0 2px 15px rgba(0, 0, 0, 0.25);
+}
+
+.book-button {
+    display: inline-block;
+    background: #fffaf5;
+    color: #4a2f25;
+    text-decoration: none;
+    padding: 17px 36px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+}
+
+.book-button:hover {
+    background: #4a2f25;
+    color: #fffaf5;
+    transform: translateY(-3px);
+}
+
+
+/* =========================================================
+   GENERAL
+========================================================= */
+
+.eyebrow {
+    font-size: 9px;
+    letter-spacing: 5px;
+    margin-bottom: 18px;
+    color: #8c6858;
+}
+
+.brown-button {
+    display: inline-block;
+    background: #4a2f25;
+    color: #fffaf5;
+    text-decoration: none;
+    padding: 17px 30px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+}
+
+.brown-button:hover {
+    opacity: 0.85;
+    transform: translateY(-2px);
+}
+
+.light-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    background: #fffaf5;
+    color: #4a2f25;
+    text-decoration: none;
+    padding: 19px 32px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+}
+
+.light-button:hover {
+    background: #eaded3;
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   HOMEPAGE — TREATMENTS
+========================================================= */
+
+.treatments {
+    background: #f5eee6;
+    padding: 110px 7% 100px;
+    color: #4a2f25;
+}
+
+.section-heading {
+    text-align: center;
+    max-width: 650px;
+    margin: 0 auto 70px;
+}
+
+.section-heading h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(45px, 5vw, 68px);
+    font-weight: 400;
+    line-height: 1;
+    margin-bottom: 24px;
+}
+
+.section-intro {
+    max-width: 500px;
+    margin: 0 auto;
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.9;
+    color: #725548;
+}
+
+.treatment-grid {
+    max-width: 1250px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid rgba(74, 47, 37, 0.22);
+    border-bottom: 1px solid rgba(74, 47, 37, 0.22);
+}
+
+.treatment-card {
+    min-height: 430px;
+    padding: 55px 45px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-right: 1px solid rgba(74, 47, 37, 0.22);
+    transition: background 0.4s ease, color 0.4s ease;
+}
+
+.treatment-card:last-child {
+    border-right: none;
+}
+
+.card-number {
+    font-family: "Playfair Display", serif;
+    font-size: 13px;
+    font-style: italic;
+    color: #a18172;
+    margin-bottom: 55px;
+}
+
+.treatment-card h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 34px;
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 15px;
+}
+
+.treatment-types {
+    font-size: 10px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: #8c6858;
+    margin-bottom: 28px;
+}
+
+.treatment-description {
+    font-size: 13px;
+    line-height: 1.9;
+    font-weight: 300;
+    color: #725548;
+    max-width: 300px;
+    margin-bottom: 35px;
+}
+
+.treatment-link {
+    margin-top: auto;
+    color: #4a2f25;
+    text-decoration: none;
+    font-size: 10px;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.treatment-link span {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+}
+
+.treatment-link:hover span {
+    transform: translateX(5px);
+}
+
+.treatment-card:hover {
+    background: #4a2f25;
+    color: #fffaf5;
+}
+
+.treatment-card:hover .card-number,
+.treatment-card:hover .treatment-types,
+.treatment-card:hover .treatment-description,
+.treatment-card:hover .treatment-link {
+    color: #fffaf5;
+}
+
+.treatments-book {
+    padding-top: 55px;
+    text-align: center;
+}
+
+.treatments-book p {
+    font-family: "Playfair Display", serif;
+    font-size: 20px;
+    font-style: italic;
+    margin-bottom: 25px;
+}
+
+
+/* =========================================================
+   HOMEPAGE — GALLERY
+   KEEP IMAGES UNCROPPED
+========================================================= */
+
+.gallery {
+    background: #4a2f25;
+    color: #fffaf5;
+    padding: 110px 7% 100px;
+}
+
+.gallery-heading {
+    max-width: 1250px;
+    margin: 0 auto 60px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 50px;
+}
+
+.gallery .eyebrow {
+    color: #c9ab9b;
+}
+
+.gallery-heading h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(48px, 6vw, 78px);
+    font-weight: 400;
+    line-height: 1;
+}
+
+.gallery-intro {
+    max-width: 300px;
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: #dfcec5;
+}
+
+.gallery-grid {
+    max-width: 1250px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 55px 28px;
+    align-items: start;
+}
+
+.gallery-piece {
+    width: 100%;
+}
+
+.gallery-image-wrap {
+    width: 100%;
+    overflow: hidden;
+    background: #5a3b30;
+}
+
+.gallery-photo {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    transition: transform 0.6s ease;
+}
+
+.gallery-piece:hover .gallery-photo {
+    transform: scale(1.015);
+}
+
+.gallery-label {
+    padding-top: 17px;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255, 250, 245, 0.16);
+}
+
+.gallery-label span {
+    font-family: "Playfair Display", serif;
+    font-size: 12px;
+    font-style: italic;
+    color: #c9ab9b;
+}
+
+.gallery-label p {
+    font-size: 9px;
+    letter-spacing: 2.5px;
+}
+
+.gallery-piece:nth-child(2),
+.gallery-piece:nth-child(4) {
+    margin-top: 90px;
+}
+
+.gallery-bottom {
+    max-width: 1250px;
+    margin: 80px auto 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.gallery-bottom p {
+    font-family: "Playfair Display", serif;
+    font-size: 20px;
+}
+
+.outline-button {
+    display: inline-block;
+    border: 1px solid rgba(255, 250, 245, 0.7);
+    color: #fffaf5;
+    text-decoration: none;
+    padding: 16px 30px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+}
+
+.outline-button:hover {
+    background: #fffaf5;
+    color: #4a2f25;
+}
+
+
+/* =========================================================
+   HOMEPAGE — ABOUT
+========================================================= */
+
+.about {
+    background: #eaded3;
+    padding: 120px 7% 100px;
+}
+
+.about-inner {
+    max-width: 1250px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 0.6fr 1.6fr 1fr;
+    gap: 65px;
+}
+
+.about-left {
+    min-height: 360px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.about-number {
+    font-family: "Playfair Display", serif;
+    font-size: 70px;
+    font-style: italic;
+    color: rgba(74, 47, 37, 0.14);
+}
+
+.about-main h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(55px, 6vw, 86px);
+    font-weight: 400;
+    line-height: 0.98;
+}
+
+.about-main h2 em {
+    color: #8c6858;
+    font-weight: 400;
+}
+
+.about-copy {
+    padding-top: 55px;
+}
+
+.about-copy p {
+    font-size: 13px;
+    line-height: 1.9;
+    color: #725548;
+    margin-bottom: 20px;
+}
+
+.about-copy .about-introduction {
+    font-family: "Playfair Display", serif;
+    font-size: 21px;
+    color: #4a2f25;
+}
+
+.about-link {
+    display: inline-flex;
+    gap: 13px;
+    margin-top: 15px;
+    color: #4a2f25;
+    text-decoration: none;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+.about-values {
+    max-width: 1250px;
+    margin: 100px auto 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid rgba(74, 47, 37, 0.2);
+    border-bottom: 1px solid rgba(74, 47, 37, 0.2);
+}
+
+.value {
+    padding: 42px 35px;
+    border-right: 1px solid rgba(74, 47, 37, 0.2);
+}
+
+.value:last-child {
+    border-right: none;
+}
+
+.value span {
+    font-family: "Playfair Display", serif;
+    font-size: 12px;
+    font-style: italic;
+    color: #9c7a6b;
+}
+
+.value h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 28px;
+    font-weight: 400;
+    margin: 28px 0 14px;
+}
+
+.value p {
+    font-size: 12px;
+    line-height: 1.8;
+    color: #725548;
+}
+
+
+/* =========================================================
+   HOMEPAGE — REVIEWS
+========================================================= */
+
+.reviews {
+    background: #fffaf5;
+    padding: 115px 7% 100px;
+}
+
+.reviews-top {
+    max-width: 850px;
+    margin: 0 auto 70px;
+    text-align: center;
+}
+
+.reviews-label {
+    font-size: 9px;
+    letter-spacing: 5px;
+    color: #8c6858;
+    margin-bottom: 20px;
+}
+
+.review-stars,
+.small-stars {
+    color: #8c6858;
+}
+
+.review-stars {
+    font-size: 11px;
+    letter-spacing: 7px;
+    margin-bottom: 25px;
+}
+
+.reviews-top h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(50px, 6vw, 78px);
+    font-weight: 400;
+}
+
+.reviews-grid {
+    max-width: 1250px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid rgba(74, 47, 37, 0.18);
+    border-bottom: 1px solid rgba(74, 47, 37, 0.18);
+}
+
+.review-card {
+    min-height: 465px;
+    padding: 45px 40px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(74, 47, 37, 0.18);
+}
+
+.review-card:last-child {
+    border-right: none;
+}
+
+.review-number {
+    font-family: "Playfair Display", serif;
+    font-size: 12px;
+    font-style: italic;
+    color: #aa8b7c;
+    margin-bottom: 38px;
+}
+
+.small-stars {
+    font-size: 9px;
+    letter-spacing: 4px;
+    margin-bottom: 30px;
+}
+
+.review-text {
+    font-family: "Playfair Display", serif;
+    font-size: 20px;
+    line-height: 1.55;
+    margin-bottom: 45px;
+}
+
+.review-client {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.client-line {
+    width: 35px;
+    height: 1px;
+    background: #9a7665;
+}
+
+.review-client h3 {
+    font-size: 9px;
+    letter-spacing: 2px;
+}
+
+.review-client p {
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    color: #9a7665;
+    margin-top: 5px;
+}
+
+.reviews-bottom {
+    text-align: center;
+    padding-top: 55px;
+}
+
+.reviews-bottom p {
+    font-family: "Playfair Display", serif;
+    font-size: 20px;
+    font-style: italic;
+    margin-bottom: 25px;
+}
+
+
+/* =========================================================
+   HOMEPAGE — FINAL BOOKING
+========================================================= */
+
+.final-booking {
+    min-height: 650px;
+    background: #4a2f25;
+    color: #fffaf5;
+    position: relative;
+    overflow: hidden;
+    padding: 120px 7%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.booking-decoration {
+    position: absolute;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(150px, 23vw, 360px);
+    color: rgba(255, 250, 245, 0.035);
+}
+
+.booking-content {
+    position: relative;
+    z-index: 2;
+}
+
+.booking-small {
+    font-size: 9px;
+    letter-spacing: 5px;
+    color: #d4bbb0;
+    margin-bottom: 25px;
+}
+
+.booking-content h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(55px, 7vw, 95px);
+    font-weight: 400;
+    line-height: 0.98;
+    margin-bottom: 30px;
+}
+
+.booking-text {
+    max-width: 480px;
+    margin: 0 auto 35px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #dfcec5;
+}
+
+.booking-main-button {
+    display: inline-flex;
+    gap: 18px;
+    background: #fffaf5;
+    color: #4a2f25;
+    text-decoration: none;
+    padding: 19px 32px;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+.booking-location {
+    margin-top: 28px;
+    font-size: 8px;
+    letter-spacing: 3px;
+    color: #bfa398;
+}
+
+
+/* =========================================================
+   TREATMENTS PAGE — HERO
+========================================================= */
+
+.treatments-page-hero {
+    min-height: 570px;
+    padding: 100px 7% 75px;
+    background: #eaded3;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.treatments-page-hero h1 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(70px, 9vw, 130px);
+    line-height: 0.83;
+    font-weight: 400;
+}
+
+.treatments-page-hero h1 em {
+    font-weight: 400;
+    color: #8c6858;
+}
+
+.treatments-page-intro {
+    max-width: 520px;
+    margin: 35px auto;
+    font-size: 13px;
+    line-height: 1.9;
+    color: #725548;
+}
+
+.treatment-jump-links {
+    display: flex;
+    gap: 35px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.treatment-jump-links a {
+    color: #4a2f25;
+    text-decoration: none;
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    border-bottom: 1px solid #9c7a6b;
+    padding-bottom: 5px;
+}
+
+
+/* =========================================================
+   TREATMENTS PAGE — SERVICE SECTIONS
+========================================================= */
+
+.service-section {
+    padding: 110px 7%;
+    background: #f5eee6;
+}
+
+.alternate-section {
+    background: #fffaf5;
+}
+
+.service-section-heading {
+    max-width: 1250px;
+    margin: 0 auto 80px;
+    display: grid;
+    grid-template-columns: 0.3fr 1.3fr 0.8fr;
+    gap: 50px;
+    align-items: end;
+}
+
+.service-number {
+    font-family: "Playfair Display", serif;
+    font-size: 65px;
+    font-style: italic;
+    color: rgba(74, 47, 37, 0.13);
+}
+
+.service-section-heading h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(52px, 6vw, 82px);
+    font-weight: 400;
+    line-height: 0.95;
+}
+
+.service-section-heading h2 em {
+    font-weight: 400;
+    color: #8c6858;
+}
+
+.service-heading-copy {
+    font-size: 12px;
+    line-height: 1.9;
+    color: #725548;
+}
+
+.service-list {
+    max-width: 1250px;
+    margin: 0 auto;
+    border-top: 1px solid rgba(74, 47, 37, 0.2);
+}
+
+.service-row {
+    display: grid;
+    grid-template-columns: 0.3fr 2fr 0.7fr 0.5fr;
+    gap: 30px;
+    align-items: center;
+    min-height: 250px;
+    border-bottom: 1px solid rgba(74, 47, 37, 0.2);
+}
+
+.service-index {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    color: #9c7a6b;
+}
+
+.service-info h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 38px;
+    font-weight: 400;
+    margin-bottom: 15px;
+}
+
+.service-info > p {
+    max-width: 520px;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #725548;
+}
+
+.service-info .infill {
+    margin-top: 20px;
+    font-size: 9px;
+    letter-spacing: 2px;
+}
+
+.infill strong {
+    font-family: "Playfair Display", serif;
+    font-size: 18px;
+    font-weight: 400;
+    margin-left: 8px;
+}
+
+.service-price {
+    font-family: "Playfair Display", serif;
+    font-size: 48px;
+}
+
+.service-book {
+    color: #4a2f25;
+    text-decoration: none;
+    font-size: 9px;
+    letter-spacing: 2px;
+}
+
+.removal-grid {
+    max-width: 1250px;
+    margin: 65px auto 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.removal-card {
+    border: 1px solid rgba(74, 47, 37, 0.2);
+    padding: 35px;
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.mini-label {
+    font-size: 8px;
+    letter-spacing: 2.5px;
+    color: #9c7a6b;
+    margin-bottom: 12px;
+}
+
+.removal-card h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 25px;
+    font-weight: 400;
+    margin-bottom: 10px;
+}
+
+.removal-card p:not(.mini-label) {
+    font-size: 11px;
+    line-height: 1.7;
+    color: #725548;
+}
+
+.removal-card > span {
+    font-family: "Playfair Display", serif;
+    font-size: 35px;
+}
+
+.important-note {
+    max-width: 1250px;
+    margin: 25px auto 0;
+    background: #eaded3;
+    padding: 30px 35px;
+}
+
+.important-note > p:last-child {
+    max-width: 850px;
+    font-family: "Playfair Display", serif;
+    font-size: 17px;
+    line-height: 1.6;
+}
+
+.simple-service-grid {
+    max-width: 1250px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.simple-service-card {
+    min-height: 360px;
+    padding: 45px;
+    border: 1px solid rgba(74, 47, 37, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.simple-service-card h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 34px;
+    font-weight: 400;
+    margin: 35px 0 18px;
+}
+
+.simple-service-card > p:not(.mini-label) {
+    font-size: 12px;
+    line-height: 1.8;
+    color: #725548;
+    max-width: 420px;
+}
+
+.simple-service-bottom {
+    margin-top: auto;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+}
+
+.simple-price {
+    font-family: "Playfair Display", serif;
+    font-size: 45px;
+}
+
+.simple-service-bottom a {
+    color: #4a2f25;
+    text-decoration: none;
+    font-size: 9px;
+    letter-spacing: 2px;
+}
+
+.brow-list {
+    max-width: 1250px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid rgba(74, 47, 37, 0.2);
+}
+
+.brow-row {
+    min-height: 280px;
+    padding: 40px;
+    border-right: 1px solid rgba(74, 47, 37, 0.2);
+    border-bottom: 1px solid rgba(74, 47, 37, 0.2);
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.brow-row:nth-child(even) {
+    border-right: none;
+}
+
+.brow-row h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 28px;
+    line-height: 1.2;
+    font-weight: 400;
+    margin-bottom: 15px;
+}
+
+.brow-row > div > p:last-child {
+    font-size: 11px;
+    line-height: 1.8;
+    color: #725548;
+    max-width: 370px;
+}
+
+.brow-price {
+    font-family: "Playfair Display", serif;
+    font-size: 38px;
+}
+
+.halal-row {
+    background: #eaded3;
+}
+
+.brows-book {
+    max-width: 1250px;
+    margin: 45px auto 0;
+    text-align: center;
+}
+
+
+/* =========================================================
+   TREATMENTS — COMBOS
+========================================================= */
+
+.combo-section {
+    padding: 110px 7%;
+    background: #4a2f25;
+    color: #fffaf5;
+}
+
+.combo-heading {
+    max-width: 700px;
+    margin: 0 auto 65px;
+    text-align: center;
+}
+
+.combo-heading .eyebrow {
+    color: #c9ab9b;
+}
+
+.combo-heading h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(55px, 7vw, 90px);
+    line-height: 0.95;
+    font-weight: 400;
+}
+
+.combo-heading h2 em {
+    color: #d4bbb0;
+    font-weight: 400;
+}
+
+.combo-heading > p:last-child {
+    max-width: 420px;
+    margin: 25px auto 0;
+    color: #d8c5bb;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.combo-grid {
+    max-width: 1050px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.combo-card {
+    min-height: 430px;
+    border: 1px solid rgba(255, 250, 245, 0.25);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.combo-top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: #c9ab9b;
+}
+
+.combo-card h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 31px;
+    line-height: 1.25;
+    font-weight: 400;
+    margin: 55px 0 20px;
+}
+
+.combo-card h3 em {
+    display: block;
+    color: #c9ab9b;
+    margin: 7px 0;
+}
+
+.combo-detail {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: #c9ab9b;
+    text-transform: uppercase;
+}
+
+.combo-bottom {
+    margin-top: auto;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+}
+
+.combo-price {
+    font-family: "Playfair Display", serif;
+    font-size: 50px;
+}
+
+.combo-bottom a {
+    color: #fffaf5;
+    text-decoration: none;
+    font-size: 9px;
+    letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   TREATMENTS — ADD ONS
+========================================================= */
+
+.addons {
+    background: #eaded3;
+    padding: 90px 7% 100px;
+}
+
+.addons-heading {
+    max-width: 1250px;
+    margin: 0 auto 45px;
+    text-align: center;
+}
+
+.addons-heading h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(48px, 5vw, 68px);
+    font-weight: 400;
+}
+
+.addons-grid {
+    max-width: 1050px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid rgba(74, 47, 37, 0.22);
+    border-bottom: 1px solid rgba(74, 47, 37, 0.22);
+}
+
+.addon {
+    min-height: 150px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid rgba(74, 47, 37, 0.22);
+}
+
+.addon:last-child {
+    border-right: none;
+}
+
+.addon p {
+    font-size: 9px;
+    letter-spacing: 2px;
+}
+
+.addon span {
+    font-family: "Playfair Display", serif;
+    font-size: 35px;
+}
+
+.treatment-booking-cta {
+    background: #4a2f25;
+    color: #fffaf5;
+    min-height: 600px;
+    padding: 110px 7%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.treatment-booking-cta .eyebrow {
+    color: #c9ab9b;
+}
+
+.treatment-booking-cta h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(58px, 7vw, 95px);
+    line-height: 0.95;
+    font-weight: 400;
+    margin-bottom: 28px;
+}
+
+.treatment-booking-cta h2 em {
+    font-weight: 400;
+    color: #d4bbb0;
+}
+
+.treatment-booking-cta > p:not(.eyebrow) {
+    max-width: 420px;
+    font-size: 12px;
+    line-height: 1.9;
+    color: #d8c5bb;
+    margin-bottom: 35px;
+}
+
+
+/* =========================================================
+   POLICIES PAGE — HERO
+========================================================= */
+
+.policies-hero {
+    min-height: 610px;
+    padding: 105px 7% 85px;
+    background: #eaded3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.policies-hero h1 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(70px, 9vw, 125px);
+    line-height: 0.86;
+    font-weight: 400;
+}
+
+.policies-hero h1 em {
+    color: #8c6858;
+    font-weight: 400;
+}
+
+.policies-hero-copy {
+    max-width: 500px;
+    margin: 35px auto;
+    color: #725548;
+    font-size: 13px;
+    line-height: 1.9;
+}
+
+.policy-jump-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 32px;
+}
+
+.policy-jump-links a {
+    color: #4a2f25;
+    text-decoration: none;
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #9c7a6b;
+}
+
+
+/* =========================================================
+   POLICIES PAGE — BOOKING
+========================================================= */
+
+.policy-section {
+    padding: 115px 7%;
+    background: #f5eee6;
+}
+
+.policy-section-heading {
+    max-width: 1250px;
+    margin: 0 auto 75px;
+    display: grid;
+    grid-template-columns: 0.35fr 1.25fr 0.8fr;
+    align-items: end;
+    gap: 50px;
+}
+
+.policy-big-number {
+    font-family: "Playfair Display", serif;
+    font-size: 68px;
+    font-style: italic;
+    color: rgba(74, 47, 37, 0.13);
+}
+
+.policy-section-heading h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(55px, 6vw, 82px);
+    line-height: 0.95;
+    font-weight: 400;
+}
+
+.policy-section-heading h2 em {
+    color: #8c6858;
+    font-weight: 400;
+}
+
+.policy-section-heading > p {
+    color: #725548;
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+.policy-grid {
+    max-width: 1250px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border-top: 1px solid rgba(74, 47, 37, 0.2);
+    border-left: 1px solid rgba(74, 47, 37, 0.2);
+}
+
+.policy-card {
+    min-height: 330px;
+    padding: 42px;
+    border-right: 1px solid rgba(74, 47, 37, 0.2);
+    border-bottom: 1px solid rgba(74, 47, 37, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.policy-card-number {
+    font-family: "Playfair Display", serif;
+    font-size: 12px;
+    font-style: italic;
+    color: #9c7a6b;
+    margin-bottom: 38px;
+}
+
+.policy-card h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 35px;
+    line-height: 1.1;
+    font-weight: 400;
+    margin-bottom: 22px;
+}
+
+.policy-card > p {
+    max-width: 470px;
+    color: #725548;
+    font-size: 12px;
+    line-height: 1.9;
+    margin-bottom: 14px;
+}
+
+.featured-policy {
+    background: #4a2f25;
+    color: #fffaf5;
+}
+
+.featured-policy .policy-card-number,
+.featured-policy > p {
+    color: #d8c5bb;
+}
+
+.featured-policy strong {
+    margin-top: auto;
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    font-weight: 400;
+    color: #fffaf5;
+}
+
+.policy-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.policy-timeline div {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 20px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(74, 47, 37, 0.14);
+}
+
+.policy-timeline div:last-child {
+    border-bottom: none;
+}
+
+.policy-timeline span {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: #8c6858;
+}
+
+.policy-timeline p {
+    color: #725548;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.wide-policy {
+    grid-column: 1 / 3;
+    min-height: 250px;
+    display: grid;
+    grid-template-columns: 0.2fr 1fr;
+}
+
+.policy-note {
+    max-width: 1250px;
+    margin: 25px auto 0;
+    padding: 45px;
+    background: #eaded3;
+    text-align: center;
+}
+
+.policy-note > p {
+    color: #8c6858;
+    font-size: 8px;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+}
+
+.policy-note h3 {
+    max-width: 700px;
+    margin: 0 auto;
+    font-family: "Playfair Display", serif;
+    font-size: 22px;
+    line-height: 1.5;
+    font-weight: 400;
+}
+
+
+/* =========================================================
+   POLICIES — BEFORE APPOINTMENT
+========================================================= */
+
+.before-section {
+    padding: 115px 7%;
+    background: #fffaf5;
+}
+
+.before-heading {
+    max-width: 700px;
+    margin: 0 auto 70px;
+    text-align: center;
+}
+
+.before-heading h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(55px, 7vw, 88px);
+    line-height: 0.95;
+    font-weight: 400;
+}
+
+.before-heading h2 em {
+    color: #8c6858;
+    font-weight: 400;
+}
+
+.before-heading > p:last-child {
+    max-width: 480px;
+    margin: 28px auto 0;
+    color: #725548;
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+.before-grid {
+    max-width: 1150px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border-top: 1px solid rgba(74, 47, 37, 0.18);
+    border-left: 1px solid rgba(74, 47, 37, 0.18);
+}
+
+.before-item {
+    min-height: 245px;
+    padding: 38px;
+    border-right: 1px solid rgba(74, 47, 37, 0.18);
+    border-bottom: 1px solid rgba(74, 47, 37, 0.18);
+}
+
+.before-item > span {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: 12px;
+    color: #9c7a6b;
+}
+
+.before-item h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 29px;
+    font-weight: 400;
+    margin: 30px 0 14px;
+}
+
+.before-item p {
+    max-width: 390px;
+    color: #725548;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   POLICIES — AFTERCARE
+========================================================= */
+
+.aftercare-section {
+    padding: 115px 7%;
+    background: #eaded3;
+}
+
+.aftercare-heading {
+    max-width: 700px;
+    margin: 0 auto 70px;
+    text-align: center;
+}
+
+.aftercare-heading h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(58px, 7vw, 92px);
+    line-height: 0.92;
+    font-weight: 400;
+}
+
+.aftercare-heading h2 em {
+    color: #8c6858;
+    font-weight: 400;
+}
+
+.aftercare-heading > p:last-child {
+    max-width: 430px;
+    margin: 28px auto 0;
+    color: #725548;
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+.aftercare-list {
+    max-width: 1050px;
+    margin: 0 auto;
+    border-top: 1px solid rgba(74, 47, 37, 0.2);
+}
+
+.aftercare-row {
+    min-height: 190px;
+    display: grid;
+    grid-template-columns: 0.25fr 1fr;
+    align-items: center;
+    gap: 45px;
+    border-bottom: 1px solid rgba(74, 47, 37, 0.2);
+    padding: 30px;
+}
+
+.aftercare-row > span {
+    font-family: "Playfair Display", serif;
+    font-size: 35px;
+    font-style: italic;
+    color: rgba(74, 47, 37, 0.3);
+}
+
+.aftercare-row h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 29px;
+    font-weight: 400;
+    margin-bottom: 12px;
+}
+
+.aftercare-row p {
+    max-width: 610px;
+    color: #725548;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.infill-callout {
+    max-width: 1050px;
+    margin: 55px auto 0;
+    background: #4a2f25;
+    color: #fffaf5;
+    padding: 55px;
+}
+
+.infill-callout .eyebrow {
+    color: #c9ab9b;
+}
+
+.infill-callout h3 {
+    max-width: 650px;
+    font-family: "Playfair Display", serif;
+    font-size: 31px;
+    line-height: 1.4;
+    font-weight: 400;
+    margin-bottom: 35px;
+}
+
+.infill-reasons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.infill-reasons span {
+    border: 1px solid rgba(255, 250, 245, 0.25);
+    padding: 12px 15px;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    color: #d8c5bb;
+}
+
+
+/* =========================================================
+   POLICIES — FAQ
+========================================================= */
+
+.faq-section {
+    padding: 115px 7%;
+    background: #f5eee6;
+}
+
+.faq-heading {
+    max-width: 850px;
+    margin: 0 auto 70px;
+    text-align: center;
+}
+
+.faq-heading h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(55px, 7vw, 90px);
+    line-height: 0.95;
+    font-weight: 400;
+}
+
+.faq-heading h2 em {
+    color: #8c6858;
+    font-weight: 400;
+}
+
+.faq-list {
+    max-width: 950px;
+    margin: 0 auto;
+    border-top: 1px solid rgba(74, 47, 37, 0.2);
+}
+
+.faq-item {
+    border-bottom: 1px solid rgba(74, 47, 37, 0.2);
+}
+
+.faq-item summary {
+    min-height: 100px;
+    padding: 25px 5px;
+    display: grid;
+    grid-template-columns: 60px 1fr 30px;
+    align-items: center;
+    gap: 20px;
+    cursor: pointer;
+    list-style: none;
+    font-family: "Playfair Display", serif;
+    font-size: 22px;
+}
+
+.faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-item summary span {
+    font-family: "Playfair Display", serif;
+    font-size: 12px;
+    font-style: italic;
+    color: #9c7a6b;
+}
+
+.faq-item summary b {
+    font-family: "DM Sans", sans-serif;
+    font-size: 22px;
+    font-weight: 300;
+    text-align: right;
+}
+
+.faq-item > p {
+    max-width: 720px;
+    padding: 0 50px 35px 85px;
+    color: #725548;
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+.faq-item[open] summary b {
+    transform: rotate(45deg);
+}
+
+
+/* =========================================================
+   POLICIES — FINAL CTA
+========================================================= */
+
+.policy-booking-cta {
+    min-height: 590px;
+    padding: 100px 7%;
+    background: #4a2f25;
+    color: #fffaf5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.policy-booking-cta .eyebrow {
+    color: #c9ab9b;
+}
+
+.policy-booking-cta h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(55px, 7vw, 90px);
+    line-height: 0.95;
+    font-weight: 400;
+}
+
+.policy-booking-cta h2 em {
+    color: #d4bbb0;
+    font-weight: 400;
+}
+
+.policy-booking-cta > p:not(.eyebrow) {
+    max-width: 430px;
+    margin: 28px auto 35px;
+    color: #d8c5bb;
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer {
+    background: #35231c;
+    color: #fffaf5;
+    padding: 80px 7% 35px;
+}
+
+.footer-top {
+    max-width: 1250px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    gap: 60px;
+}
+
+.footer-brand h2 {
+    font-family: "Playfair Display", serif;
+    font-size: 42px;
+    font-weight: 400;
+    letter-spacing: 2px;
+}
+
+.footer-brand > span {
+    display: block;
+    font-size: 8px;
+    letter-spacing: 4px;
+    margin: 5px 0 28px;
+}
+
+.footer-brand p {
+    font-family: "Playfair Display", serif;
+    font-size: 17px;
+    line-height: 1.6;
+    color: #cdb6aa;
+}
+
+.footer-title {
+    font-size: 8px;
+    letter-spacing: 3px;
+    color: #a98b7d;
+    margin-bottom: 25px;
+}
+
+.footer-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 13px;
+}
+
+.footer-column a {
+    color: #e7d8d0;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 300;
+    transition: opacity 0.3s ease;
+}
+
+.footer-column a:hover {
+    opacity: 0.55;
+}
+
+.footer-handle {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: 13px;
+    color: #bda297;
+    margin-top: 10px;
+}
+
+.footer-line {
+    max-width: 1250px;
+    height: 1px;
+    background: rgba(255, 250, 245, 0.14);
+    margin: 65px auto 30px;
+}
+
+.footer-bottom {
+    max-width: 1250px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+}
+
+.footer-bottom p,
+.footer-bottom a {
+    color: #9f8377;
+    text-decoration: none;
+    font-size: 8px;
+    letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 800px) {
+
+    /* HEADER */
+
+    header {
+        height: 85px;
+        padding: 0 22px;
+    }
+
+    nav {
+        display: none;
+    }
+
+    .logo h1 {
+        font-size: 24px;
+    }
+
+    .logo span {
+        font-size: 8px;
+    }
+
+    .nav-book {
+        padding: 12px 16px;
+        font-size: 9px;
+    }
+
+
+    /* HOMEPAGE HERO */
+
+    .hero-image {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .hero-overlay {
+        background: rgba(47, 29, 22, 0.32);
+    }
+
+    .hero-content {
+        width: 90%;
+    }
+
+    .location {
+        font-size: 8px;
+        margin-bottom: 14px;
+    }
+
+    .hero h2 {
+        font-size: clamp(38px, 11vw, 58px);
+        margin-bottom: 16px;
+    }
+
+    .intro {
+        max-width: 300px;
+        font-size: 11px;
+        line-height: 1.5;
+        margin-bottom: 20px;
+    }
+
+    .book-button {
+        padding: 13px 25px;
+        font-size: 9px;
+    }
+
+
+    /* HOMEPAGE TREATMENTS */
+
+    .treatments {
+        padding: 75px 22px 70px;
+    }
+
+    .section-heading {
+        margin-bottom: 45px;
+    }
+
+    .eyebrow {
+        font-size: 8px;
+        margin-bottom: 14px;
+    }
+
+    .section-heading h2 {
+        font-size: 44px;
+        margin-bottom: 18px;
+    }
+
+    .section-intro {
+        max-width: 330px;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .treatment-grid {
+        display: block;
+    }
+
+    .treatment-card {
+        min-height: 340px;
+        padding: 40px 25px;
+        border-right: none;
+        border-bottom: 1px solid rgba(74, 47, 37, 0.22);
+    }
+
+    .card-number {
+        margin-bottom: 35px;
+    }
+
+    .treatment-card h3 {
+        font-size: 30px;
+    }
+
+    .treatment-description {
+        max-width: 100%;
+        font-size: 12px;
+    }
+
+    .treatment-card:hover {
+        background: transparent;
+        color: #4a2f25;
+    }
+
+    .treatment-card:hover .card-number {
+        color: #a18172;
+    }
+
+    .treatment-card:hover .treatment-types {
+        color: #8c6858;
+    }
+
+    .treatment-card:hover .treatment-description {
+        color: #725548;
+    }
+
+    .treatment-card:hover .treatment-link {
+        color: #4a2f25;
+    }
+
+
+    /* GALLERY */
+
+    .gallery {
+        padding: 75px 22px 70px;
+    }
+
+    .gallery-heading {
+        display: block;
+        margin-bottom: 40px;
+    }
+
+    .gallery-heading h2 {
+        font-size: 46px;
+        margin-bottom: 20px;
+    }
+
+    .gallery-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .gallery-piece:nth-child(2),
+    .gallery-piece:nth-child(4) {
+        margin-top: 0;
+    }
+
+    .gallery-photo {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .gallery-bottom {
+        display: block;
+        margin-top: 50px;
+    }
+
+    .gallery-bottom p {
+        margin-bottom: 25px;
+    }
+
+
+    /* ABOUT */
+
+    .about {
+        padding: 75px 22px 70px;
+    }
+
+    .about-inner {
+        display: block;
+    }
+
+    .about-left {
+        min-height: auto;
+        margin-bottom: 25px;
+    }
+
+    .about-number {
+        font-size: 45px;
+    }
+
+    .about-main h2 {
+        font-size: 52px;
+    }
+
+    .about-copy {
+        padding-top: 35px;
+    }
+
+    .about-values {
+        margin-top: 65px;
+        display: block;
+    }
+
+    .value {
+        border-right: none;
+        border-bottom: 1px solid rgba(74, 47, 37, 0.2);
+    }
+
+
+    /* REVIEWS */
+
+    .reviews {
+        padding: 75px 22px 70px;
+    }
+
+    .reviews-grid {
+        display: block;
+    }
+
+    .review-card {
+        min-height: auto;
+        padding: 40px 25px;
+        border-right: none;
+        border-bottom: 1px solid rgba(74, 47, 37, 0.18);
+    }
+
+    .review-text {
+        font-size: 19px;
+    }
+
+
+    /* FINAL BOOKING */
+
+    .final-booking {
+        min-height: 560px;
+        padding: 80px 22px;
+    }
+
+    .booking-content h2 {
+        font-size: 55px;
+    }
+
+
+    /* TREATMENTS HERO */
+
+    .treatments-page-hero {
+        min-height: 520px;
+        padding: 75px 22px 60px;
+    }
+
+    .treatments-page-hero h1 {
+        font-size: 65px;
+    }
+
+    .treatment-jump-links {
+        gap: 18px;
+    }
+
+
+    /* TREATMENTS SERVICES */
+
+    .service-section {
+        padding: 75px 22px;
+    }
+
+    .service-section-heading {
+        display: block;
+        margin-bottom: 50px;
+    }
+
+    .service-number {
+        font-size: 42px;
+        margin-bottom: 25px;
+    }
+
+    .service-section-heading h2 {
+        font-size: 52px;
+        margin-bottom: 25px;
+    }
+
+    .service-row {
+        grid-template-columns: 1fr auto;
+        gap: 15px;
+        padding: 35px 0;
+        min-height: auto;
+    }
+
+    .service-index {
+        grid-column: 1 / 3;
+    }
+
+    .service-info {
+        grid-column: 1 / 2;
+    }
+
+    .service-info h3 {
+        font-size: 31px;
+    }
+
+    .service-price {
+        grid-column: 2 / 3;
+        grid-row: 2;
+        font-size: 38px;
+    }
+
+    .service-book {
+        grid-column: 1 / 3;
+    }
+
+    .removal-grid,
+    .simple-service-grid,
+    .brow-list,
+    .combo-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .brow-row {
+        border-right: none;
+    }
+
+    .combo-section {
+        padding: 75px 22px;
+    }
+
+    .combo-heading h2 {
+        font-size: 55px;
+    }
+
+    .addons {
+        padding: 70px 22px;
+    }
+
+    .addons-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .addon {
+        min-height: 130px;
+        padding: 22px;
+        border-bottom: 1px solid rgba(74, 47, 37, 0.22);
+    }
+
+    .addon:nth-child(2) {
+        border-right: none;
+    }
+
+    .treatment-booking-cta {
+        min-height: 530px;
+        padding: 80px 22px;
+    }
+
+
+    /* ===============================
+       POLICIES MOBILE
+    =============================== */
+
+    .policies-hero {
+        min-height: 520px;
+        padding: 75px 22px 60px;
+    }
+
+    .policies-hero h1 {
+        font-size: 61px;
+    }
+
+    .policies-hero-copy {
+        max-width: 330px;
+        font-size: 12px;
+        line-height: 1.75;
+        margin: 28px auto;
+    }
+
+    .policy-jump-links {
+        gap: 18px;
+    }
+
+    .policy-jump-links a {
+        font-size: 8px;
+    }
+
+    .policy-section {
+        padding: 75px 22px;
+    }
+
+    .policy-section-heading {
+        display: block;
+        margin-bottom: 50px;
+    }
+
+    .policy-big-number {
+        display: block;
+        font-size: 42px;
+        margin-bottom: 25px;
+    }
+
+    .policy-section-heading h2 {
+        font-size: 52px;
+        margin-bottom: 25px;
+    }
+
+    .policy-section-heading > p {
+        max-width: 340px;
+    }
+
+    .policy-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .policy-card {
+        min-height: auto;
+        padding: 35px 27px;
+    }
+
+    .policy-card-number {
+        margin-bottom: 28px;
+    }
+
+    .policy-card h3 {
+        font-size: 30px;
+    }
+
+    .wide-policy {
+        grid-column: auto;
+        display: block;
+    }
+
+    .wide-policy .policy-card-number {
+        display: block;
+    }
+
+    .policy-timeline div {
+        grid-template-columns: 70px 1fr;
+        gap: 12px;
+    }
+
+    .policy-note {
+        padding: 35px 25px;
+    }
+
+    .policy-note h3 {
+        font-size: 19px;
+    }
+
+
+    /* BEFORE */
+
+    .before-section {
+        padding: 75px 22px;
+    }
+
+    .before-heading {
+        margin-bottom: 50px;
+    }
+
+    .before-heading h2 {
+        font-size: 53px;
+    }
+
+    .before-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .before-item {
+        min-height: auto;
+        padding: 32px 27px;
+    }
+
+    .before-item h3 {
+        font-size: 27px;
+        margin-top: 23px;
+    }
+
+
+    /* AFTERCARE */
+
+    .aftercare-section {
+        padding: 75px 22px;
+    }
+
+    .aftercare-heading {
+        margin-bottom: 50px;
+    }
+
+    .aftercare-heading h2 {
+        font-size: 57px;
+    }
+
+    .aftercare-row {
+        min-height: auto;
+        grid-template-columns: 50px 1fr;
+        gap: 15px;
+        padding: 30px 5px;
+    }
+
+    .aftercare-row > span {
+        font-size: 25px;
+    }
+
+    .aftercare-row h3 {
+        font-size: 25px;
+    }
+
+    .infill-callout {
+        padding: 35px 27px;
+    }
+
+    .infill-callout h3 {
+        font-size: 25px;
+    }
+
+
+    /* FAQ */
+
+    .faq-section {
+        padding: 75px 22px;
+    }
+
+    .faq-heading {
+        margin-bottom: 50px;
+    }
+
+    .faq-heading h2 {
+        font-size: 49px;
+    }
+
+    .faq-item summary {
+        min-height: 90px;
+        grid-template-columns: 35px 1fr 20px;
+        gap: 10px;
+        font-size: 18px;
+    }
+
+    .faq-item > p {
+        padding: 0 30px 30px 45px;
+    }
+
+
+    /* POLICY CTA */
+
+    .policy-booking-cta {
+        min-height: 520px;
+        padding: 80px 22px;
+    }
+
+    .policy-booking-cta h2 {
+        font-size: 54px;
+    }
+
+
+    /* FOOTER */
+
+    footer {
+        padding: 65px 22px 30px;
+    }
+
+    .footer-top {
+        grid-template-columns: 1fr 1fr;
+        gap: 50px 30px;
+    }
+
+    .footer-brand {
+        grid-column: 1 / 3;
+    }
+
+    .footer-brand h2 {
+        font-size: 38px;
+    }
+
+    .footer-bottom {
+        display: block;
+    }
+
+    .footer-bottom p,
+    .footer-bottom a {
+        display: block;
+        margin-bottom: 12px;
+    }
+}
+
+
+/* =========================================================
+   BOOKING PAGE
+========================================================= */
+
+
+/* BOOKING HERO */
+
+.booking-page-hero {
+    background: #eaded3;
+    padding: 105px 7% 0;
+    text-align: center;
+    color: #4a2f25;
+}
+
+.booking-page-hero h1 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(58px, 7vw, 92px);
+    font-weight: 400;
+    line-height: 0.95;
+    margin-bottom: 28px;
+}
+
+.booking-page-hero h1 em {
+    color: #8c6858;
+    font-weight: 400;
+}
+
+.booking-page-intro {
+    max-width: 520px;
+    margin: 0 auto;
+    color: #725548;
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.9;
+}
+
+
+/* BOOKING STEPS */
+
+.booking-steps {
+    max-width: 1050px;
+    margin: 75px auto 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid rgba(74, 47, 37, 0.2);
+}
+
+.booking-step {
+    padding: 28px 20px 30px;
+    border-right: 1px solid rgba(74, 47, 37, 0.2);
+    opacity: 0.45;
+    position: relative;
+}
+
+.booking-step:last-child {
+    border-right: none;
+}
+
+.booking-step span {
+    display: block;
+    font-family: "Playfair Display", serif;
+    font-size: 17px;
+    font-style: italic;
+    margin-bottom: 9px;
+}
+
+.booking-step p {
+    font-size: 8px;
+    letter-spacing: 2px;
+}
+
+.booking-step.active {
+    opacity: 1;
+}
+
+.booking-step.active::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #4a2f25;
+}
+
+
+/* MAIN BOOKING SERVICES */
+
+.booking-services {
+    background: #f5eee6;
+    padding: 115px 7% 150px;
+}
+
+.booking-section-heading {
+    max-width: 1250px;
+    margin: 0 auto 90px;
+    display: grid;
+    grid-template-columns: 1fr 0.65fr;
+    gap: 80px;
+    align-items: end;
+}
+
+.booking-section-heading h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(48px, 6vw, 76px);
+    font-weight: 400;
+    line-height: 1;
+}
+
+.booking-section-heading h2 em {
+    color: #8c6858;
+    font-weight: 400;
+}
+
+.booking-section-heading > p {
+    max-width: 390px;
+    font-size: 13px;
+    line-height: 1.9;
+    color: #725548;
+    font-weight: 300;
+}
+
+
+/* CATEGORY */
+
+.booking-category {
+    max-width: 1250px;
+    margin: 0 auto 100px;
+}
+
+.booking-category:last-child {
+    margin-bottom: 0;
+}
+
+.booking-category-title {
+    display: flex;
+    align-items: flex-start;
+    gap: 28px;
+    margin-bottom: 30px;
+}
+
+.booking-category-title > span {
+    font-family: "Playfair Display", serif;
+    font-size: 13px;
+    font-style: italic;
+    color: #a18172;
+    padding-top: 7px;
+}
+
+.booking-category-title p {
+    font-size: 8px;
+    letter-spacing: 3px;
+    color: #8c6858;
+    margin-bottom: 8px;
+}
+
+.booking-category-title h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 34px;
+    font-weight: 400;
+}
+
+
+/* TREATMENT OPTIONS */
+
+.booking-treatment-list {
+    border-top: 1px solid rgba(74, 47, 37, 0.22);
+}
+
+.booking-treatment {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(74, 47, 37, 0.22);
+    color: #4a2f25;
+    padding: 32px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+    text-align: left;
+    cursor: pointer;
+    font-family: "DM Sans", sans-serif;
+    transition:
+        background 0.3s ease,
+        color 0.3s ease,
+        padding 0.3s ease;
+}
+
+.booking-treatment:hover {
+    background: #eaded3;
+    padding-left: 35px;
+    padding-right: 35px;
+}
+
+.booking-treatment h4 {
+    font-family: "Playfair Display", serif;
+    font-size: 25px;
+    font-weight: 400;
+    margin-bottom: 8px;
+}
+
+.booking-treatment > div:first-child > p {
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 1.7;
+    color: #725548;
+}
+
+.booking-treatment-end {
+    min-width: 180px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 35px;
+}
+
+.booking-treatment-end strong {
+    font-family: "Playfair Display", serif;
+    font-size: 23px;
+    font-weight: 400;
+}
+
+.booking-treatment-end span {
+    font-size: 8px;
+    letter-spacing: 1.8px;
+    white-space: nowrap;
+}
+
+
+/* SELECTED TREATMENT */
+
+.booking-treatment.selected {
+    background: #4a2f25;
+    color: #fffaf5;
+    padding-left: 35px;
+    padding-right: 35px;
+}
+
+.booking-treatment.selected > div:first-child > p {
+    color: #dfcec5;
+}
+
+.booking-treatment.selected .booking-treatment-end span {
+    color: #fffaf5;
+}
+
+.booking-treatment.selected .booking-treatment-end span::before {
+    content: "✓ ";
+}
+
+
+/* CATEGORY NOTE */
+
+.booking-category-note {
+    margin-top: 18px;
+    font-size: 10px;
+    line-height: 1.7;
+    color: #8c6858;
+    font-style: italic;
+}
+
+
+/* SELECTED TREATMENT BAR */
+
+.booking-selection-bar {
+    position: fixed;
+    left: 50%;
+    bottom: 25px;
+    transform: translate(-50%, 150%);
+    width: calc(100% - 60px);
+    max-width: 1100px;
+    background: #4a2f25;
+    color: #fffaf5;
+    padding: 22px 25px 22px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    z-index: 100;
+    box-shadow: 0 15px 45px rgba(47, 29, 22, 0.22);
+    transition: transform 0.45s ease;
+}
+
+.booking-selection-bar.visible {
+    transform: translate(-50%, 0);
+}
+
+.booking-selection-bar > div:first-child > p {
+    font-size: 7px;
+    letter-spacing: 2.5px;
+    color: #c9ab9b;
+    margin-bottom: 7px;
+}
+
+.booking-selection-bar h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.selection-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+#selectedPrice {
+    font-family: "Playfair Display", serif;
+    font-size: 25px;
+}
+
+#continueBooking {
+    border: none;
+    background: #fffaf5;
+    color: #4a2f25;
+    padding: 16px 22px;
+    font-family: "DM Sans", sans-serif;
+    font-size: 9px;
+    letter-spacing: 1.8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: 0.3s ease;
+}
+
+#continueBooking:hover {
+    background: #eaded3;
+}
+
+#continueBooking:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+
+/* BOOKING REMINDER */
+
+.booking-reminder {
+    background: #eaded3;
+    padding: 115px 7% 120px;
+    text-align: center;
+}
+
+.booking-reminder > h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(45px, 5vw, 65px);
+    font-weight: 400;
+    margin-bottom: 70px;
+}
+
+.booking-reminder-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid rgba(74, 47, 37, 0.2);
+    border-bottom: 1px solid rgba(74, 47, 37, 0.2);
+}
+
+.booking-reminder-grid > div {
+    padding: 50px 40px;
+    border-right: 1px solid rgba(74, 47, 37, 0.2);
+}
+
+.booking-reminder-grid > div:last-child {
+    border-right: none;
+}
+
+.booking-reminder-grid span {
+    display: block;
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: 13px;
+    color: #a18172;
+    margin-bottom: 30px;
+}
+
+.booking-reminder-grid h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 16px;
+}
+
+.booking-reminder-grid p {
+    font-size: 11px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: #725548;
+}
+
+.booking-reminder-grid a {
+    display: inline-block;
+    margin-top: 20px;
+    color: #4a2f25;
+    font-size: 8px;
+    letter-spacing: 1.7px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(74, 47, 37, 0.4);
+    padding-bottom: 4px;
+}
+
+
+/* =========================================================
+   BOOKING PAGE — TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .booking-page-hero {
+        padding-top: 80px;
+    }
+
+    .booking-steps {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .booking-step:nth-child(2) {
+        border-right: none;
+    }
+
+    .booking-step:nth-child(1),
+    .booking-step:nth-child(2) {
+        border-bottom: 1px solid rgba(74, 47, 37, 0.2);
+    }
+
+    .booking-section-heading {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .booking-section-heading > p {
+        max-width: 520px;
+    }
+
+    .booking-reminder-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .booking-reminder-grid > div {
+        border-right: none;
+        border-bottom: 1px solid rgba(74, 47, 37, 0.2);
+    }
+
+    .booking-reminder-grid > div:last-child {
+        border-bottom: none;
+    }
+
+}
+
+
+/* =========================================================
+   BOOKING PAGE — MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .booking-page-hero {
+        padding: 70px 6% 0;
+    }
+
+    .booking-page-hero h1 {
+        font-size: 52px;
+    }
+
+    .booking-page-intro {
+        font-size: 12px;
+    }
+
+    .booking-steps {
+        margin-top: 55px;
+    }
+
+    .booking-step {
+        padding: 22px 10px;
+    }
+
+    .booking-step p {
+        font-size: 7px;
+        letter-spacing: 1.2px;
+    }
+
+
+    .booking-services {
+        padding: 80px 6% 120px;
+    }
+
+    .booking-section-heading {
+        margin-bottom: 65px;
+    }
+
+    .booking-section-heading h2 {
+        font-size: 48px;
+    }
+
+    .booking-category {
+        margin-bottom: 75px;
+    }
+
+    .booking-category-title {
+        gap: 18px;
+    }
+
+    .booking-category-title h3 {
+        font-size: 29px;
+    }
+
+
+    .booking-treatment {
+        padding: 26px 8px;
+        align-items: flex-start;
+        gap: 18px;
+    }
+
+    .booking-treatment:hover,
+    .booking-treatment.selected {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .booking-treatment h4 {
+        font-size: 20px;
+    }
+
+    .booking-treatment > div:first-child > p {
+        font-size: 10px;
+    }
+
+    .booking-treatment-end {
+        min-width: 72px;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 10px;
+    }
+
+    .booking-treatment-end strong {
+        font-size: 20px;
+    }
+
+    .booking-treatment-end span {
+        font-size: 6px;
+        letter-spacing: 1px;
+    }
+
+
+    .booking-selection-bar {
+        width: calc(100% - 24px);
+        bottom: 12px;
+        padding: 17px;
+        gap: 15px;
+    }
+
+    .booking-selection-bar h3 {
+        font-size: 14px;
+        max-width: 150px;
+    }
+
+    .selection-bar-right {
+        gap: 12px;
+    }
+
+    #selectedPrice {
+        font-size: 19px;
+    }
+
+    #continueBooking {
+        padding: 13px 14px;
+        font-size: 7px;
+    }
+
+    #continueBooking span {
+        display: none;
+    }
+
+
+    .booking-reminder {
+        padding: 85px 6%;
+    }
+
+    .booking-reminder > h2 {
+        font-size: 43px;
+        margin-bottom: 50px;
+    }
+
+    .booking-reminder-grid > div {
+        padding: 40px 25px;
+    }
+
+}
+
+/* =====================================================
+   BOOKING — STEP TWO
+   DATE + TIME
+===================================================== */
+
+#dateTimeSection {
+    padding: 110px 7% 150px;
+    background: #f5eee6;
+}
+
+.date-time-booking {
+    max-width: 1180px;
+    margin: 65px auto 0;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 30px;
+    align-items: stretch;
+}
+
+
+/* CALENDAR */
+
+.booking-calendar,
+.booking-times {
+    background: rgba(255, 255, 255, 0.32);
+    border: 1px solid rgba(74, 47, 37, 0.14);
+    padding: 38px;
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 35px;
+}
+
+.calendar-header h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 30px;
+    font-weight: 400;
+    color: #4a2f25;
+    margin: 0;
+}
+
+.calendar-header button {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(74, 47, 37, 0.22);
+    background: transparent;
+    color: #4a2f25;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.calendar-header button:hover:not(:disabled) {
+    background: #4a2f25;
+    color: #f5eee6;
+}
+
+.calendar-header button:disabled {
+    opacity: 0.25;
+    cursor: default;
+}
+
+
+/* WEEKDAYS */
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.calendar-weekdays span {
+    font-size: 10px;
+    letter-spacing: 1.4px;
+    font-weight: 500;
+    opacity: 0.55;
+}
+
+
+/* DAYS */
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #4a2f25;
+    font-family: "DM Sans", sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: 0.2s ease;
+}
+
+.calendar-day:hover:not(:disabled) {
+    border-color: #4a2f25;
+}
+
+.calendar-day.selected {
+    background: #4a2f25;
+    color: #f5eee6;
+}
+
+.calendar-day.unavailable {
+    opacity: 0.2;
+    cursor: default;
+    text-decoration: line-through;
+}
+
+
+/* TIMES */
+
+.booking-times {
+    display: flex;
+    flex-direction: column;
+}
+
+.booking-times-heading {
+    margin-bottom: 28px;
+}
+
+.booking-times-heading .eyebrow {
+    margin-bottom: 10px;
+}
+
+.booking-times-heading h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 29px;
+    font-weight: 400;
+    margin: 0;
+    color: #4a2f25;
+}
+
+.time-slots {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.time-slot {
+    min-height: 55px;
+    padding: 14px 12px;
+    background: transparent;
+    border: 1px solid rgba(74, 47, 37, 0.2);
+    color: #4a2f25;
+    font-family: "DM Sans", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.7px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.time-slot:hover {
+    border-color: #4a2f25;
+    background: rgba(74, 47, 37, 0.04);
+}
+
+.time-slot.selected {
+    background: #4a2f25;
+    color: #f5eee6;
+    border-color: #4a2f25;
+}
+
+.choose-date-message {
+    grid-column: 1 / -1;
+    font-size: 13px;
+    line-height: 1.8;
+    opacity: 0.6;
+}
+
+
+/* DATE/TIME CONTINUE */
+
+.date-time-summary {
+    max-width: 1180px;
+    margin: 25px auto 0;
+    background: #4a2f25;
+    color: #f5eee6;
+    padding: 25px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+}
+
+.date-time-summary p {
+    margin: 0 0 5px;
+    font-size: 9px;
+    letter-spacing: 1.8px;
+    opacity: 0.65;
+}
+
+.date-time-summary h3 {
+    margin: 0;
+    font-family: "Playfair Display", serif;
+    font-size: 21px;
+    font-weight: 400;
+}
+
+#continueToDetails {
+    flex-shrink: 0;
+    min-width: 170px;
+    padding: 16px 22px;
+    border: 1px solid #f5eee6;
+    background: #f5eee6;
+    color: #4a2f25;
+    font-family: "DM Sans", sans-serif;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#continueToDetails span {
+    margin-left: 10px;
+}
+
+#continueToDetails:hover:not(:disabled) {
+    background: transparent;
+    color: #f5eee6;
+}
+
+#continueToDetails:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+
+/* TABLET */
+
+@media (max-width: 900px) {
+
+    #dateTimeSection {
+        padding: 80px 6% 120px;
+    }
+
+    .date-time-booking {
+        grid-template-columns: 1fr;
+        margin-top: 45px;
+    }
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    #dateTimeSection {
+        padding: 65px 5% 110px;
+    }
+
+    .date-time-booking {
+        margin-top: 35px;
+        gap: 18px;
+    }
+
+    .booking-calendar,
+    .booking-times {
+        padding: 22px 16px;
+    }
+
+    .calendar-header {
+        margin-bottom: 25px;
+    }
+
+    .calendar-header h3 {
+        font-size: 24px;
+    }
+
+    .calendar-header button {
+        width: 38px;
+        height: 38px;
+    }
+
+    .calendar-days {
+        gap: 3px;
+    }
+
+    .calendar-day {
+        font-size: 12px;
+    }
+
+    .calendar-weekdays span {
+        font-size: 8px;
+        letter-spacing: 0.6px;
+    }
+
+    .time-slots {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .time-slot {
+        min-height: 50px;
+        font-size: 11px;
+    }
+
+    .date-time-summary {
+        padding: 20px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .date-time-summary h3 {
+        font-size: 18px;
+    }
+
+    #continueToDetails {
+        width: 100%;
+    }
+
+}
+
+/* =====================================================
+   BOOKING — STEP THREE
+   CLIENT DETAILS
+===================================================== */
+
+#detailsSection {
+    padding: 110px 7% 150px;
+    background: #f5eee6;
+}
+
+.client-details-layout {
+    max-width: 1180px;
+    margin: 65px auto 0;
+    display: grid;
+    grid-template-columns: 1.25fr 0.75fr;
+    gap: 30px;
+    align-items: start;
+}
+
+
+/* FORM */
+
+.client-details-form {
+    background: rgba(255, 255, 255, 0.32);
+    border: 1px solid rgba(74, 47, 37, 0.14);
+    padding: 45px;
+}
+
+.client-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.client-form-group {
+    margin-bottom: 25px;
+}
+
+.client-form-group label {
+    display: block;
+    margin-bottom: 10px;
+    color: #4a2f25;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+}
+
+.client-form-group label span {
+    margin-left: 6px;
+    font-size: 8px;
+    font-weight: 400;
+    opacity: 0.45;
+}
+
+.client-form-group input,
+.client-form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid rgba(74, 47, 37, 0.2);
+    background: rgba(255, 255, 255, 0.28);
+    color: #4a2f25;
+    padding: 17px 18px;
+    font-family: "DM Sans", sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: 0.2s ease;
+}
+
+.client-form-group input {
+    height: 55px;
+}
+
+.client-form-group textarea {
+    resize: vertical;
+    min-height: 125px;
+    line-height: 1.7;
+}
+
+.client-form-group input::placeholder,
+.client-form-group textarea::placeholder {
+    color: rgba(74, 47, 37, 0.38);
+}
+
+.client-form-group input:focus,
+.client-form-group textarea:focus {
+    border-color: #4a2f25;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+
+/* POLICY CHECKBOX */
+
+.booking-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    margin: 8px 0 28px;
+    color: #4a2f25;
+    font-size: 11px;
+    line-height: 1.7;
+    cursor: pointer;
+}
+
+.booking-checkbox input {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+    accent-color: #4a2f25;
+}
+
+.booking-checkbox a {
+    color: #4a2f25;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+
+/* CONTINUE BUTTON */
+
+.details-continue-button {
+    width: 100%;
+    border: 1px solid #4a2f25;
+    background: #4a2f25;
+    color: #f5eee6;
+    padding: 19px 24px;
+    font-family: "DM Sans", sans-serif;
+    font-size: 10px;
+    letter-spacing: 1.7px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.details-continue-button span {
+    margin-left: 12px;
+}
+
+.details-continue-button:hover {
+    background: transparent;
+    color: #4a2f25;
+}
+
+
+/* BOOKING SUMMARY */
+
+.client-booking-summary {
+    border: 1px solid rgba(74, 47, 37, 0.14);
+    background: #4a2f25;
+    color: #f5eee6;
+    padding: 38px 32px;
+}
+
+.client-booking-summary .eyebrow {
+    color: #f5eee6;
+    opacity: 0.55;
+    margin-bottom: 28px;
+}
+
+.client-summary-treatments {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(245, 238, 230, 0.18);
+}
+
+.client-summary-treatment {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 14px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.client-summary-treatment:last-child {
+    margin-bottom: 0;
+}
+
+.client-summary-treatment span {
+    opacity: 0.82;
+}
+
+.client-summary-treatment strong {
+    flex-shrink: 0;
+    font-weight: 500;
+}
+
+.client-summary-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 13px;
+    font-size: 11px;
+}
+
+.client-summary-line span {
+    opacity: 0.55;
+}
+
+.client-summary-line strong {
+    font-weight: 400;
+    text-align: right;
+}
+
+
+/* TOTAL */
+
+.client-summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-top: 25px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(245, 238, 230, 0.18);
+    font-family: "Playfair Display", serif;
+    font-size: 18px;
+}
+
+.client-summary-total strong {
+    font-size: 22px;
+    font-weight: 400;
+}
+
+
+/* DEPOSIT */
+
+.client-summary-deposit {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-top: 22px;
+    padding: 17px 0;
+    border-top: 1px solid rgba(245, 238, 230, 0.18);
+    border-bottom: 1px solid rgba(245, 238, 230, 0.18);
+    font-size: 11px;
+}
+
+.client-summary-deposit strong {
+    font-family: "Playfair Display", serif;
+    font-size: 22px;
+    font-weight: 400;
+}
+
+.client-summary-note {
+    margin: 18px 0 0;
+    font-size: 10px;
+    line-height: 1.7;
+    opacity: 0.55;
+}
+
+
+/* TABLET */
+
+@media (max-width: 900px) {
+
+    #detailsSection {
+        padding: 80px 6% 120px;
+    }
+
+    .client-details-layout {
+        grid-template-columns: 1fr;
+        margin-top: 45px;
+    }
+
+    .client-booking-summary {
+        order: -1;
+    }
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    #detailsSection {
+        padding: 65px 5% 110px;
+    }
+
+    .client-details-layout {
+        margin-top: 35px;
+        gap: 18px;
+    }
+
+    .client-details-form {
+        padding: 28px 20px;
+    }
+
+    .client-form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .client-form-group {
+        margin-bottom: 20px;
+    }
+
+    .client-form-group input {
+        height: 52px;
+        font-size: 16px;
+    }
+
+    .client-form-group textarea {
+        font-size: 16px;
+    }
+
+    .client-booking-summary {
+        padding: 30px 22px;
+    }
+
+    .client-summary-treatment {
+        font-size: 11px;
+    }
+
+    .booking-checkbox {
+        font-size: 10px;
+    }
+
+}
+
+/* =====================================================
+   BOOKING — STEP FOUR
+   DEPOSIT
+===================================================== */
+
+#depositSection {
+    padding: 110px 7% 150px;
+    background: #f5eee6;
+}
+
+.deposit-layout {
+    max-width: 1180px;
+    margin: 65px auto 0;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 30px;
+    align-items: start;
+}
+
+
+/* PAYMENT CARD */
+
+.deposit-payment-card {
+    padding: 48px;
+    background: rgba(255, 255, 255, 0.32);
+    border: 1px solid rgba(74, 47, 37, 0.14);
+}
+
+.deposit-price {
+    margin: 10px 0 15px;
+    font-family: "Playfair Display", serif;
+    font-size: 72px;
+    line-height: 1;
+    color: #4a2f25;
+}
+
+.deposit-intro {
+    max-width: 520px;
+    margin: 0 0 35px;
+    color: #4a2f25;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+
+/* PAYMENT OPTIONS */
+
+.spot-payment-info {
+    border-top: 1px solid rgba(74, 47, 37, 0.15);
+}
+
+.spot-payment-option {
+    display: grid;
+    grid-template-columns: 45px 1fr;
+    gap: 18px;
+    padding: 25px 0;
+    border-bottom: 1px solid rgba(74, 47, 37, 0.15);
+}
+
+.spot-option-number {
+    font-family: "Playfair Display", serif;
+    font-size: 17px;
+    color: #4a2f25;
+    opacity: 0.45;
+}
+
+.spot-payment-option h3 {
+    margin: 0 0 8px;
+    font-family: "Playfair Display", serif;
+    font-size: 21px;
+    font-weight: 400;
+    color: #4a2f25;
+}
+
+.spot-payment-option p {
+    margin: 0;
+    color: #4a2f25;
+    font-size: 11px;
+    line-height: 1.8;
+    opacity: 0.72;
+}
+
+
+/* APPLE PAY REMINDER */
+
+.apple-pay-reminder {
+    margin: 30px 0 18px;
+    padding: 18px 20px;
+    background: rgba(74, 47, 37, 0.07);
+    border-left: 3px solid #4a2f25;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.apple-pay-reminder strong {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: #4a2f25;
+}
+
+.apple-pay-reminder span {
+    font-size: 12px;
+    color: #4a2f25;
+}
+
+
+/* SPOT BUTTON */
+
+.spot-deposit-button {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    background: #4a2f25;
+    border: 1px solid #4a2f25;
+    color: #f5eee6;
+    text-decoration: none;
+    font-family: "DM Sans", sans-serif;
+    font-size: 11px;
+    letter-spacing: 1.7px;
+    transition: 0.25s ease;
+}
+
+.spot-deposit-button:hover {
+    background: transparent;
+    color: #4a2f25;
+}
+
+.deposit-security-note {
+    margin: 12px 0 0;
+    text-align: center;
+    font-size: 9px;
+    color: #4a2f25;
+    opacity: 0.5;
+}
+
+
+/* IMPORTANT NOTICE */
+
+.deposit-pending-notice {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid rgba(74, 47, 37, 0.15);
+}
+
+.deposit-pending-notice strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: #4a2f25;
+}
+
+.deposit-pending-notice p {
+    margin: 0;
+    font-size: 10px;
+    line-height: 1.7;
+    color: #4a2f25;
+    opacity: 0.65;
+}
+
+
+/* BOOKING SUMMARY */
+
+.deposit-booking-summary {
+    padding: 38px 32px;
+    background: #4a2f25;
+    color: #f5eee6;
+}
+
+.deposit-booking-summary .eyebrow {
+    color: #f5eee6;
+    opacity: 0.55;
+    margin-bottom: 15px;
+}
+
+.deposit-client-name {
+    margin-bottom: 28px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid rgba(245, 238, 230, 0.18);
+    font-family: "Playfair Display", serif;
+    font-size: 26px;
+}
+
+.deposit-remaining {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-top: 15px;
+    padding: 17px 0;
+    border-bottom: 1px solid rgba(245, 238, 230, 0.18);
+    font-size: 11px;
+}
+
+.deposit-remaining span {
+    opacity: 0.7;
+}
+
+.deposit-remaining strong {
+    font-family: "Playfair Display", serif;
+    font-size: 22px;
+    font-weight: 400;
+}
+
+
+/* TABLET */
+
+@media (max-width: 900px) {
+
+    #depositSection {
+        padding: 80px 6% 120px;
+    }
+
+    .deposit-layout {
+        grid-template-columns: 1fr;
+        margin-top: 45px;
+    }
+
+    .deposit-booking-summary {
+        order: -1;
+    }
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    #depositSection {
+        padding: 65px 5% 110px;
+    }
+
+    .deposit-layout {
+        margin-top: 35px;
+        gap: 18px;
+    }
+
+    .deposit-payment-card {
+        padding: 30px 20px;
+    }
+
+    .deposit-price {
+        font-size: 58px;
+    }
+
+    .spot-payment-option {
+        grid-template-columns: 35px 1fr;
+    }
+
+    .apple-pay-reminder {
+        padding: 16px;
+    }
+
+    .deposit-booking-summary {
+        padding: 30px 22px;
+    }
+
+}
+
+/* HEADER LOGO IMAGE */
+
+.header-logo {
+    display: block;
+    width: 350px;
+    height: 90px;
+    object-fit: contain;
+}
+
+.logo-link {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.footer-logo {
+    display: block;
+    width: 190px;
+    height: auto;
+    object-fit: contain;
+    object-position: left center;
+    margin: 0 0 22px -18px;
+}
+
+/* MOBILE HEADER LOGO ALIGNMENT */
+
+@media (max-width: 768px) {
+
+    header {
+        position: relative;
+    }
+
+    header .logo-link {
+        margin-right: auto;
+        justify-content: flex-start;
+    }
+
+    header .header-logo {
+        width: 150px;
+        height: 60px;
+        object-position: left center;
+    }
+}
+
+/* MOBILE FOOTER BOTTOM */
+
+@media (max-width: 768px) {
+
+    .footer-bottom {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding-top: 22px;
+    }
+
+    .footer-bottom > * {
+        width: auto;
+        margin: 0;
+    }
+
+    .footer-bottom a {
+        align-self: flex-start;
+    }
+}
+
+/* COMBO SAVE BADGE */
+
+.combo-top span:last-child {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    padding: 8px 12px;
+    border: 1px solid rgba(239, 222, 210, 0.55);
+    border-radius: 2px;
+}
+
+/* FOOTER BOTTOM - FINAL RESPONSIVE FIX */
+
+.footer-bottom {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+}
+
+.footer-bottom p,
+.footer-bottom a {
+    margin: 0;
+    width: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .footer-bottom p,
+    .footer-bottom a {
+        white-space: nowrap;
+    }
+}
