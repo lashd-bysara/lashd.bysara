@@ -249,7 +249,7 @@
         <div class="gallery-grid">
 
 
-            <!-- CLASSICS -->
+            <!-- CLASSIC LASHES -->
 
             <article class="gallery-piece">
 
@@ -295,7 +295,7 @@
                     <span>02</span>
 
                     <p>
-                        KOREAN LASH LIFT
+                        KOREAN LASH LIFT + TINT
                     </p>
 
                 </div>
@@ -322,7 +322,7 @@
                     <span>03</span>
 
                     <p>
-                        BROW LAMINATION
+                        FULL BROW LAMINATION
                     </p>
 
                 </div>
@@ -357,7 +357,180 @@
             </article>
 
         </div>
+<!-- EXTRA GALLERY PHOTOS -->
 
+<div class="gallery-more" id="galleryMore">
+
+    <!-- 05 -->
+    <article class="gallery-piece">
+        <div class="gallery-image-wrap">
+            <img
+                src="Brow_lami.jpg"
+                alt="Brow lamination by LASH'D."
+                class="gallery-photo"
+            >
+        </div>
+
+        <div class="gallery-label">
+            <span>05</span>
+            <p>FULL BROW LAMINATION</p>
+        </div>
+    </article>
+
+
+    <!-- 06 -->
+    <article class="gallery-piece">
+        <div class="gallery-image-wrap">
+            <img
+                src="Choppy_lashes.jpg"
+                alt="Choppy lash extensions by LASH'D."
+                class="gallery-photo"
+            >
+        </div>
+
+        <div class="gallery-label">
+            <span>06</span>
+            <p>VOLUME + EXTRA SPIKES</p>
+        </div>
+    </article>
+
+
+    <!-- 07 -->
+    <article class="gallery-piece">
+        <div class="gallery-image-wrap">
+            <img
+                src="Classics_brow_lamination.jpg"
+                alt="Classic lashes and brow lamination by LASH'D."
+                class="gallery-photo"
+            >
+        </div>
+
+        <div class="gallery-label">
+            <span>07</span>
+            <p>CLASSIC LASHES + FULL BROW LAMINATION</p>
+        </div>
+    </article>
+
+
+    <!-- 08 -->
+    <article class="gallery-piece">
+        <div class="gallery-image-wrap">
+            <img
+                src="Hybrid_lash.jpg"
+                alt="Hybrid lash extensions by LASH'D."
+                class="gallery-photo"
+            >
+        </div>
+
+        <div class="gallery-label">
+            <span>08</span>
+            <p>HYBRID LASHES</p>
+        </div>
+    </article>
+
+
+    <!-- 09 -->
+    <article class="gallery-piece">
+        <div class="gallery-image-wrap">
+            <img
+                src="Lash_lift.jpg"
+                alt="Korean lash lift by LASH'D."
+                class="gallery-photo"
+            >
+        </div>
+
+        <div class="gallery-label">
+            <span>09</span>
+            <p>KOREAN LASH LIFT + TINT</p>
+        </div>
+    </article>
+
+
+    <!-- 10 -->
+    <article class="gallery-piece">
+        <div class="gallery-image-wrap">
+            <img
+                src="Lash_lift2.jpg"
+                alt="Korean lash lift by LASH'D."
+                class="gallery-photo"
+            >
+        </div>
+
+        <div class="gallery-label">
+            <span>10</span>
+            <p>KOREAN LASH LIFT + TINT</p>
+        </div>
+    </article>
+
+
+    <!-- 11 -->
+    <article class="gallery-piece">
+        <div class="gallery-image-wrap">
+            <img
+                src="Lash_lift3.jpg"
+                alt="Korean lash lift by LASH'D."
+                class="gallery-photo"
+            >
+        </div>
+
+        <div class="gallery-label">
+            <span>11</span>
+            <p>KOREAN LASH LIFT + TINT</p>
+        </div>
+    </article>
+
+
+    <!-- 12 -->
+    <article class="gallery-piece">
+        <div class="gallery-image-wrap">
+            <img
+                src="Saba_hybrid.jpg"
+                alt="Hybrid lash extensions by LASH'D."
+                class="gallery-photo"
+            >
+        </div>
+
+        <div class="gallery-label">
+            <span>12</span>
+            <p>HYBRID LASHES</p>
+        </div>
+    </article>
+
+
+    <!-- 13 -->
+    <article class="gallery-piece">
+        <div class="gallery-image-wrap">
+            <img
+                src="Saba_lashes.JPG"
+                alt="Lash extensions by LASH'D."
+                class="gallery-photo"
+            >
+        </div>
+
+        <div class="gallery-label">
+            <span>13</span>
+            <p>VOLUME LASHES + FULL BROW LAMINATION</p>
+        </div>
+    </article>
+
+
+    <!-- 14 -->
+    <article class="gallery-piece">
+        <div class="gallery-image-wrap">
+            <img
+                src="Volume_browlami.jpg"
+                alt="Volume lashes and brow lamination by LASH'D."
+                class="gallery-photo"
+            >
+        </div>
+
+        <div class="gallery-label">
+            <span>14</span>
+            <p>VOLUME LASHES + FULL BROW LAMINATION</p>
+        </div>
+    </article>
+
+</div>
 
         <div class="gallery-bottom">
 
@@ -365,9 +538,9 @@
                 Made to suit <em>you.</em>
             </p>
 
-            <a href="#gallery" class="outline-button">
-                VIEW MORE
-            </a>
+           <button type="button" class="outline-button" id="galleryToggle">
+    VIEW MORE
+</button>
 
         </div>
 
@@ -814,7 +987,22 @@
         </div>
 
     </footer>
+<script>
+    const galleryToggle = document.getElementById("galleryToggle");
+    const galleryMore = document.getElementById("galleryMore");
 
+    galleryToggle.addEventListener("click", () => {
+        const isOpen = galleryMore.classList.toggle("is-open");
+
+        galleryToggle.textContent = isOpen ? "VIEW LESS" : "VIEW MORE";
+
+        if (!isOpen) {
+            document.getElementById("gallery").scrollIntoView({
+                behavior: "smooth"
+            });
+        }
+    });
+</script>
 </body>
 
 </html>
