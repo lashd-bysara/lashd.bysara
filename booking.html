@@ -21,7 +21,68 @@
 </head>
 
 <body>
+<!-- TEMPORARY BOOKING PAUSE -->
+<div style="
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    background: #f5f0ea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    text-align: center;
+">
+    <div style="max-width: 500px;">
+        
+        <p style="
+            font-size: 12px;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+            color: #8a766b;
+        ">
+            LASH'D. BY SARA
+        </p>
 
+        <h1 style="
+            font-family: Georgia, 'Times New Roman', serif;
+            font-weight: 400;
+            font-size: 42px;
+            color: #4a3c35;
+            margin-bottom: 18px;
+        ">
+            Online booking is<br>
+            <em>temporarily unavailable.</em>
+        </h1>
+
+        <p style="
+            font-size: 15px;
+            line-height: 1.7;
+            color: #806e64;
+            margin-bottom: 28px;
+        ">
+            We're currently updating our online booking system.
+            For now, please message us on TikTok to book your appointment.
+        </p>
+
+        <a
+            href="https://www.tiktok.com/@lashd.bysara"
+            target="_blank"
+            style="
+                display: inline-block;
+                background: #5d463a;
+                color: white;
+                text-decoration: none;
+                padding: 17px 28px;
+                font-size: 12px;
+                letter-spacing: 1.5px;
+            "
+        >
+            BOOK VIA TIKTOK DM →
+        </a>
+
+    </div>
+</div>
     <!-- HEADER -->
 
     <header>
@@ -928,54 +989,567 @@
         lashdBookedSlots = await response.json();
     }
 
-    function lashdIsSlotBooked(dateKey, time) {
-        return lashdBookedSlots.some(
-            slot =>
-                slot.appointment_date === dateKey &&
-                slot.appointment_time === time
+ /* =====================================================
+   SMART APPOINTMENT SLOT CALCULATION
+===================================================== */
+
+function lashdTimeToMinutes(time) {
+
+    if (!time) return null;
+
+    const cleanTime =
+        String(time).trim();
+
+    // Handles database times such as 13:30:00
+    if (
+        /^\d{1,2}:\d{2}(:\d{2})?$/.test(cleanTime)
+    ) {
+
+        const parts =
+            cleanTime.split(":");
+
+        return (
+            Number(parts[0]) * 60 +
+            Number(parts[1])
         );
     }
 
-    function getOpenTimesForDate(date) {
-        const dateKey = formatDateKey(date);
-
-        return getAvailableTimesForDate(date).filter(
-            time => !lashdIsSlotBooked(dateKey, time)
+    // Handles display times such as 1:30 PM
+    const match =
+        cleanTime.match(
+            /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i
         );
+
+    if (!match) return null;
+
+    let hour =
+        Number(match[1]);
+
+    const minute =
+        Number(match[2]);
+
+    const period =
+        match[3].toUpperCase();
+
+    if (
+        period === "PM" &&
+        hour !== 12
+    ) {
+        hour += 12;
     }
 
-    async function reserveLashdSlot(clientDetails) {
-        const response = await fetch(
-            LASHD_SUPABASE_URL + "/rest/v1/bookings",
-            {
-                method: "POST",
-                headers: {
-                    "apikey": LASHD_SUPABASE_KEY,
-                    "Content-Type": "application/json",
-                    "Prefer": "return=minimal"
-                },
-                body: JSON.stringify({
-                    appointment_date: formatDateKey(selectedDate),
-                    appointment_time: selectedTime,
-                    client_name:
-                        clientDetails.firstName + " " + clientDetails.lastName,
-                    client_email: clientDetails.email
-                })
+    if (
+        period === "AM" &&
+        hour === 12
+    ) {
+        hour = 0;
+    }
+
+    return hour * 60 + minute;
+}
+
+
+function lashdMinutesToDisplay(minutes) {
+
+    const hour24 =
+        Math.floor(minutes / 60);
+
+    const minute =
+        minutes % 60;
+
+    const period =
+        hour24 >= 12
+            ? "PM"
+            : "AM";
+
+    let hour12 =
+        hour24 % 12;
+
+    if (hour12 === 0) {
+        hour12 = 12;
+    }
+
+    return (
+        hour12 +
+        ":" +
+        String(minute).padStart(2, "0") +
+        " " +
+        period
+    );
+}
+
+
+function lashdMinutesToDatabaseTime(minutes) {
+
+    const hour =
+        Math.floor(minutes / 60);
+
+    const minute =
+        minutes % 60;
+
+    return (
+        String(hour).padStart(2, "0") +
+        ":" +
+        String(minute).padStart(2, "0") +
+        ":00"
+    );
+}
+
+
+function lashdPeriodsOverlap(
+    startA,
+    endA,
+    startB,
+    endB
+) {
+
+    return (
+        startA < endB &&
+        endA > startB
+    );
+}
+
+
+/* =====================================================
+   GOOGLE CALENDAR CONFLICT CHECK
+===================================================== */
+
+function lashdGoogleConflict(
+    dateKey,
+    candidateStart,
+    candidateEnd
+) {
+
+    return lashdGoogleBusy.some(period => {
+
+        // An all-day event blocks the whole date.
+        if (period.allDay) {
+
+            return (
+                dateKey >= period.start &&
+                dateKey < period.end
+            );
+        }
+
+        if (
+            !period.start ||
+            !period.end
+        ) {
+            return false;
+        }
+
+        const startDate =
+            new Date(period.start);
+
+        const endDate =
+            new Date(period.end);
+
+        /*
+           Convert Google's timestamp into
+           Europe/London clock time.
+        */
+
+        const formatter =
+            new Intl.DateTimeFormat(
+                "en-GB",
+                {
+                    timeZone: "Europe/London",
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hourCycle: "h23"
+                }
+            );
+
+        const startParts =
+            formatter.formatToParts(startDate);
+
+        const endParts =
+            formatter.formatToParts(endDate);
+
+        const getPart =
+            (parts, type) =>
+                parts.find(
+                    part => part.type === type
+                )?.value;
+
+        const googleDate =
+            getPart(startParts, "year") +
+            "-" +
+            getPart(startParts, "month") +
+            "-" +
+            getPart(startParts, "day");
+
+        if (googleDate !== dateKey) {
+            return false;
+        }
+
+        const googleStart =
+            Number(
+                getPart(startParts, "hour")
+            ) * 60 +
+            Number(
+                getPart(startParts, "minute")
+            );
+
+        const googleEnd =
+            Number(
+                getPart(endParts, "hour")
+            ) * 60 +
+            Number(
+                getPart(endParts, "minute")
+            );
+
+        return lashdPeriodsOverlap(
+            candidateStart,
+            candidateEnd,
+            googleStart,
+            googleEnd
+        );
+    });
+}
+
+
+/* =====================================================
+   WEBSITE BOOKING CONFLICT CHECK
+===================================================== */
+
+function lashdWebsiteBookingConflict(
+    dateKey,
+    candidateStart,
+    candidateEnd
+) {
+
+    return lashdBookedSlots.some(slot => {
+
+        if (
+            slot.appointment_date !== dateKey
+        ) {
+            return false;
+        }
+
+        const bookedStart =
+            lashdTimeToMinutes(
+                slot.appointment_time
+            );
+
+        if (bookedStart === null) {
+            return false;
+        }
+
+        /*
+           New bookings have blocked_until.
+
+           Older bookings may not, so they fall
+           back to appointment_end_time.
+
+           If both are missing, protect the exact
+           old start time rather than crashing.
+        */
+
+        let bookedEnd =
+            lashdTimeToMinutes(
+                slot.blocked_until
+            );
+
+        if (bookedEnd === null) {
+
+            bookedEnd =
+                lashdTimeToMinutes(
+                    slot.appointment_end_time
+                );
+        }
+
+        if (bookedEnd === null) {
+
+            bookedEnd =
+                bookedStart + 30;
+        }
+
+        return lashdPeriodsOverlap(
+            candidateStart,
+            candidateEnd,
+            bookedStart,
+            bookedEnd
+        );
+    });
+}
+
+
+/* =====================================================
+   GENERATE VALID 30-MINUTE START TIMES
+===================================================== */
+
+function getOpenTimesForDate(date) {
+
+    const dateKey =
+        formatDateKey(date);
+
+    const timing =
+        getLashdBookingTiming();
+
+    /*
+       No treatment selected = don't offer
+       appointment times yet.
+    */
+
+    if (timing.duration <= 0) {
+        return [];
+    }
+
+    const windows =
+        lashdAvailability.filter(
+            window =>
+                window.availability_date ===
+                dateKey
+        );
+
+    if (windows.length === 0) {
+        return [];
+    }
+
+    const validTimes = [];
+
+    windows.forEach(window => {
+
+        const windowStart =
+            lashdTimeToMinutes(
+                window.start_time
+            );
+
+        const windowEnd =
+            lashdTimeToMinutes(
+                window.end_time
+            );
+
+        if (
+            windowStart === null ||
+            windowEnd === null
+        ) {
+            return;
+        }
+
+        /*
+           end_time means:
+           Sara wants to be COMPLETELY finished
+           by this time, including her break.
+        */
+
+        const latestStart =
+            windowEnd -
+            timing.totalBlocked;
+
+        /*
+           Start choices are every 30 minutes.
+           If availability starts at an odd time,
+           round UP to the next 30-minute point.
+        */
+
+        let candidate =
+            Math.ceil(
+                windowStart / 30
+            ) * 30;
+
+        while (
+            candidate <= latestStart
+        ) {
+
+            const blockedUntil =
+                candidate +
+                timing.totalBlocked;
+
+            const googleConflict =
+                lashdGoogleConflict(
+                    dateKey,
+                    candidate,
+                    blockedUntil
+                );
+
+            const websiteConflict =
+                lashdWebsiteBookingConflict(
+                    dateKey,
+                    candidate,
+                    blockedUntil
+                );
+
+            if (
+                !googleConflict &&
+                !websiteConflict
+            ) {
+
+                validTimes.push(
+                    lashdMinutesToDisplay(
+                        candidate
+                    )
+                );
             }
+
+            candidate += 30;
+        }
+    });
+
+    /*
+       Remove duplicates in case two availability
+       windows accidentally overlap.
+    */
+
+    return [
+        ...new Set(validTimes)
+    ];
+}
+
+ async function reserveLashdSlot(clientDetails) {
+
+    const timing =
+        getLashdBookingTiming();
+
+    const startMinutes =
+        lashdTimeToMinutes(
+            selectedTime
         );
 
-        if (response.status === 409) {
-            const error = new Error("SLOT_TAKEN");
-            error.code = "SLOT_TAKEN";
+    if (
+        startMinutes === null ||
+        timing.duration <= 0
+    ) {
+        throw new Error(
+            "INVALID_BOOKING_TIME"
+        );
+    }
+
+    const appointmentEnd =
+        startMinutes +
+        timing.duration;
+
+    const blockedUntil =
+        appointmentEnd +
+        timing.buffer;
+
+
+    /*
+       One last Google Calendar check immediately
+       before reserving the appointment.
+    */
+
+    const dateKey =
+        formatDateKey(selectedDate);
+
+    await loadLashdGoogleBusy(
+        dateKey,
+        dateKey
+    );
+
+
+    if (
+        lashdGoogleConflict(
+            dateKey,
+            startMinutes,
+            blockedUntil
+        )
+    ) {
+
+        const error =
+            new Error("SLOT_TAKEN");
+
+        error.code =
+            "SLOT_TAKEN";
+
+        throw error;
+    }
+
+
+    /*
+       Ask Supabase to reserve the entire protected
+       period atomically.
+    */
+
+    const response = await fetch(
+        LASHD_SUPABASE_URL +
+        "/rest/v1/rpc/reserve_booking_slot",
+        {
+            method: "POST",
+            headers: {
+                "apikey":
+                    LASHD_SUPABASE_KEY,
+
+                "Content-Type":
+                    "application/json"
+            },
+
+            body: JSON.stringify({
+
+                p_appointment_date:
+                    dateKey,
+
+                p_appointment_time:
+                    lashdMinutesToDatabaseTime(
+                        startMinutes
+                    ),
+
+                p_appointment_end_time:
+                    lashdMinutesToDatabaseTime(
+                        appointmentEnd
+                    ),
+
+                p_blocked_until:
+                    lashdMinutesToDatabaseTime(
+                        blockedUntil
+                    ),
+
+                p_duration_minutes:
+                    timing.duration,
+
+                p_buffer_minutes:
+                    timing.buffer,
+
+                p_client_name:
+                    clientDetails.firstName +
+                    " " +
+                    clientDetails.lastName,
+
+                p_client_email:
+                    clientDetails.email
+            })
+        }
+    );
+
+
+    if (!response.ok) {
+
+        const errorText =
+            await response.text();
+
+        console.error(
+            "Booking reservation failed:",
+            errorText
+        );
+
+        if (
+            errorText.includes(
+                "BOOKING_SLOT_UNAVAILABLE"
+            )
+        ) {
+
+            const error =
+                new Error("SLOT_TAKEN");
+
+            error.code =
+                "SLOT_TAKEN";
+
             throw error;
         }
 
-        if (!response.ok) {
-            throw new Error("Could not reserve appointment");
-        }
-
-        currentReservationCreated = true;
+        throw new Error(
+            "Could not reserve booking"
+        );
     }
+
+
+    currentReservationCreated =
+        true;
+}
 
 
 
@@ -1905,61 +2479,247 @@
     ];
 
 
-    /* =====================================================
-       AVAILABILITY
-       Weekend appointments: Saturday + Sunday
-       Appointment length: 3 hours
-       Weekday dates are unavailable unless added below.
-    ===================================================== */
+  /* =====================================================
+   LIVE AVAILABILITY
+   Availability is now controlled through Supabase.
+===================================================== */
 
-    const weekendTimes = [
-        "12:00 PM",
-        "3:00 PM"
-    ];
+let lashdAvailability = [];
+let lashdGoogleBusy = [];
 
 
-    /*
-       TO ADD A WEEKDAY:
-       Add the date in YYYY-MM-DD format and the start times you want.
+/* =====================================================
+   TREATMENT DURATIONS + PROTECTED BREAKS
 
-       Example:
-       "2026-10-27": ["11:00 AM", "2:00 PM"],
+   duration = treatment time in minutes
+   buffer   = protected break AFTER the whole booking
+===================================================== */
 
-       Delete the example/comment and add real dates whenever needed.
-    */
+const LASHD_TREATMENT_TIMINGS = {
 
-    const weekdayAvailability = {
+    "Classic Lashes": {
+        duration: 150,
+        buffer: 60
+    },
 
-        // "2026-10-27": ["11:00 AM", "2:00 PM"],
+    "Hybrid Lashes": {
+        duration: 150,
+        buffer: 60
+    },
 
+    "Volume Lashes": {
+        duration: 150,
+        buffer: 60
+    },
+
+    "Classic Infill": {
+        duration: 120,
+        buffer: 60
+    },
+
+    "Hybrid Infill": {
+        duration: 120,
+        buffer: 60
+    },
+
+    "Volume Infill": {
+        duration: 120,
+        buffer: 60
+    },
+
+    "Korean Lash Lift": {
+        duration: 120,
+        buffer: 45
+    },
+
+    "Korean Lash Lift + Tint": {
+        duration: 120,
+        buffer: 45
+    },
+
+    "Brow Lamination + Mapping + Wax + Tint": {
+        duration: 90,
+        buffer: 0
+    },
+
+    "Brow Lamination + Mapping + Wax": {
+        duration: 90,
+        buffer: 0
+    },
+
+    "Brow Lamination + Mapping + Tint": {
+        duration: 90,
+        buffer: 0
+    },
+
+    "Halal Brows + Tint": {
+        duration: 90,
+        buffer: 0
+    },
+
+    "Halal Brows": {
+        duration: 90,
+        buffer: 0
+    },
+
+    "Korean Lash Lift + Tint + Full Brow Lamination": {
+        duration: 180,
+        buffer: 60
+    },
+
+    "Korean Lash Lift + Tint + Halal Brows + Tint": {
+        duration: 180,
+        buffer: 60
+    },
+
+    "Lash Tint": {
+        duration: 30,
+        buffer: 0
+    },
+
+    "Brow Tint": {
+        duration: 30,
+        buffer: 0
+    },
+
+    "Brow Wax": {
+        duration: 45,
+        buffer: 0
+    },
+
+    "Brow Mapping": {
+        duration: 20,
+        buffer: 0
+    },
+
+    "LASH'D. Lash Removal": {
+        duration: 60,
+        buffer: 0
+    },
+
+    "Foreign Lash Removal": {
+        duration: 60,
+        buffer: 0
+    }
+
+};
+
+
+/* =====================================================
+   CALCULATE TOTAL BOOKING LENGTH
+
+   If multiple treatments are selected:
+   - treatment durations are added together
+   - the largest required break is added ONCE
+     after the complete appointment
+===================================================== */
+
+function getLashdBookingTiming() {
+
+    let duration = 0;
+    let buffer = 0;
+
+    basket.forEach(item => {
+
+        const treatmentName =
+    item.name || item.treatment;
+
+const timing =
+    LASHD_TREATMENT_TIMINGS[treatmentName];
+
+if (!timing) {
+
+    console.warn(
+        "Missing treatment timing:",
+        treatmentName
+    );
+
+    return;
+}
+
+        duration += timing.duration;
+
+        buffer = Math.max(
+            buffer,
+            timing.buffer
+        );
+
+    });
+
+    return {
+        duration,
+        buffer,
+        totalBlocked: duration + buffer
     };
+}
 
 
-    function getAvailableTimesForDate(date) {
+/* =====================================================
+   LOAD WORKING AVAILABILITY FROM SUPABASE
+===================================================== */
 
-        const dateKey =
-            formatDateKey(date);
+async function loadLashdAvailability() {
 
-        const day =
-            date.getDay();
-
-
-        if (
-            day === 0 ||
-            day === 6
-        ) {
-
-            return weekendTimes;
-
+    const response = await fetch(
+        LASHD_SUPABASE_URL +
+        "/rest/v1/rpc/get_availability",
+        {
+            method: "POST",
+            headers: {
+                "apikey": LASHD_SUPABASE_KEY,
+                "Content-Type": "application/json"
+            },
+            body: "{}"
         }
+    );
 
+    if (!response.ok) {
 
-        return (
-            weekdayAvailability[dateKey] ||
-            []
+        throw new Error(
+            "Could not load availability"
         );
 
     }
+
+    lashdAvailability =
+        await response.json();
+}
+
+
+/* =====================================================
+   LOAD BUSY TIMES FROM GOOGLE CALENDAR
+===================================================== */
+
+async function loadLashdGoogleBusy(
+    startDate,
+    endDate
+) {
+
+    const endpoint =
+        LASHD_SUPABASE_URL +
+        "/functions/v1/calendar-busy-slots" +
+        "?start=" +
+        encodeURIComponent(startDate) +
+        "&end=" +
+        encodeURIComponent(endDate);
+
+    const response =
+        await fetch(endpoint);
+
+    if (!response.ok) {
+
+        throw new Error(
+            "Could not load Google Calendar"
+        );
+
+    }
+
+    const data =
+        await response.json();
+
+    lashdGoogleBusy =
+        data.busy || [];
+}
 
 
     function formatDateKey(date) {
@@ -2478,9 +3238,53 @@
             }
 
 
-            renderCalendar();
+            (async () => {
 
-            renderTimes();
+    try {
+
+        await loadLashdAvailability();
+        await loadLashdBookedSlots();
+
+        if (lashdAvailability.length > 0) {
+
+            const dates =
+                lashdAvailability
+                    .map(
+                        item =>
+                            item.availability_date
+                    )
+                    .sort();
+
+            await loadLashdGoogleBusy(
+                dates[0],
+                dates[dates.length - 1]
+            );
+        } else {
+
+            lashdGoogleBusy = [];
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Could not refresh live availability:",
+            error
+        );
+
+        /*
+           Fail safely rather than showing
+           potentially outdated appointment times.
+        */
+
+        lashdAvailability = [];
+        lashdGoogleBusy = [];
+    }
+
+    renderCalendar();
+    renderTimes();
+
+})();
 
 
             window.scrollTo({
@@ -3134,23 +3938,68 @@
        START
     ===================================================== */
 
-    async function initialiseBooking() {
-        updateBasket();
+  async function initialiseBooking() {
 
-        try {
-            await loadLashdBookedSlots();
-        } catch (error) {
-            console.error(
-                "Could not load booked slots:",
-                error
+    updateBasket();
+
+    try {
+
+        await Promise.all([
+            loadLashdBookedSlots(),
+            loadLashdAvailability()
+        ]);
+
+        /*
+           Load Google Calendar busy periods for
+           the dates currently stored as availability.
+        */
+
+        if (lashdAvailability.length > 0) {
+
+            const availabilityDates =
+                lashdAvailability
+                    .map(
+                        item =>
+                            item.availability_date
+                    )
+                    .sort();
+
+            const firstDate =
+                availabilityDates[0];
+
+            const lastDate =
+                availabilityDates[
+                    availabilityDates.length - 1
+                ];
+
+            await loadLashdGoogleBusy(
+                firstDate,
+                lastDate
             );
         }
 
-        renderCalendar();
-        renderTimes();
+    } catch (error) {
+
+        console.error(
+            "Could not load live booking availability:",
+            error
+        );
+
+        /*
+           Safety first:
+           if live availability cannot be checked,
+           don't accidentally show bookable times.
+        */
+
+        lashdAvailability = [];
+        lashdGoogleBusy = [];
     }
 
-    initialiseBooking();
+    renderCalendar();
+    renderTimes();
+}
+
+initialiseBooking();
 
 </script>
 </body>
