@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+<html lang="en">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta name="robots" content="noindex, nofollow">
+
+    <title>LASH'D. Admin</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f5f0ea;
+            color: #4a3c35;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .admin-page {
+            width: min(92%, 650px);
+            margin: 0 auto;
+            padding: 35px 0 70px;
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 34px;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .brand p {
+            margin: 8px 0 0;
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #8a766b;
+        }
+
+        .card {
+            background: #fffaf6;
+            border: 1px solid #e5d8cf;
+            border-radius: 18px;
+            padding: 24px;
+            margin-bottom: 22px;
+            box-shadow:
+                0 8px 25px rgba(80, 60, 50, 0.06);
+        }
+
+        .card h2 {
+            margin: 0 0 7px;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 24px;
+            font-weight: 400;
+        }
+
+        .description {
+            margin: 0 0 22px;
+            color: #806e64;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        input {
+            width: 100%;
+            height: 52px;
+            padding: 0 14px;
+            margin-bottom: 18px;
+            border: 1px solid #d9cbc2;
+            border-radius: 11px;
+            background: white;
+            color: #4a3c35;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #8b7062;
+        }
+
+        .time-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .time-row select {
+    width: 32%;
+    height: 52px;
+    padding: 0 8px;
+    margin-bottom: 18px;
+    border: 1px solid #d9cbc2;
+    border-radius: 11px;
+    background: white;
+    color: #4a3c35;
+    font-size: 16px;
+    outline: none;
+}
+
+.time-row select:focus {
+    border-color: #8b7062;
+}
+
+        button {
+            width: 100%;
+            min-height: 52px;
+            border: none;
+            border-radius: 11px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .primary-button {
+            background: #5d463a;
+            color: white;
+        }
+
+        .primary-button:hover {
+            opacity: 0.92;
+        }
+
+        .availability-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .availability-item {
+            border: 1px solid #e5d8cf;
+            border-radius: 13px;
+            padding: 16px;
+            background: white;
+        }
+
+        .availability-date {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 19px;
+            margin-bottom: 6px;
+        }
+
+        .availability-time {
+            color: #806e64;
+            font-size: 14px;
+            margin-bottom: 13px;
+        }
+
+        .availability-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 9px;
+        }
+
+        .edit-button {
+            min-height: 42px;
+            background: #eee5df;
+            color: #5d463a;
+        }
+
+        .delete-button {
+            min-height: 42px;
+            background: #f5e8e5;
+            color: #85564c;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 25px 10px;
+            color: #927f74;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .status-message {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .status-message.success {
+            display: block;
+            background: #edf4ed;
+            color: #526652;
+        }
+
+        .status-message.error {
+            display: block;
+            background: #f7eaea;
+            color: #865858;
+        }
+
+        .admin-note {
+            text-align: center;
+            color: #9a877c;
+            font-size: 12px;
+            line-height: 1.6;
+            padding: 5px 20px;
+        }
+
+        @media (max-width: 500px) {
+
+            .admin-page {
+                width: 91%;
+                padding-top: 25px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .time-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .brand h1 {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="admin-page">
+
+    <div class="brand">
+        <h1>LASH'D. by Sara</h1>
+        <p>Availability Admin</p>
+    </div>
+
+
+    <!-- ADD / EDIT AVAILABILITY -->
+
+    <section class="card">
+
+        <h2 id="formTitle">
+            Add Availability
+        </h2>
+
+        <p class="description">
+            Choose when you want to work.
+            Your finish time means the time you want
+            to be completely finished by.
+        </p>
+
+        <form id="availabilityForm">
+
+            <label for="availabilityDate">
+                Date
+            </label>
+
+            <input
+                type="date"
+                id="availabilityDate"
+                required
+            >
+
+
+<div class="time-row">
+
+    <div>
+        <label>Start Time</label>
+
+        <select id="startHour" required>
+            <option value="">Hour</option>
+            <option>1</option><option>2</option><option>3</option>
+            <option>4</option><option>5</option><option>6</option>
+            <option>7</option><option>8</option><option>9</option>
+            <option>10</option><option>11</option><option>12</option>
+        </select>
+
+        <select id="startMinute" required>
+            <option value="00">00</option>
+            <option value="30">30</option>
+        </select>
+
+        <select id="startPeriod" required>
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+        </select>
+    </div>
+
+    <div>
+        <label>Finish By</label>
+
+        <select id="endHour" required>
+            <option value="">Hour</option>
+            <option>1</option><option>2</option><option>3</option>
+            <option>4</option><option>5</option><option>6</option>
+            <option>7</option><option>8</option><option>9</option>
+            <option>10</option><option>11</option><option>12</option>
+        </select>
+
+        <select id="endMinute" required>
+            <option value="00">00</option>
+            <option value="30">30</option>
+        </select>
+
+        <select id="endPeriod" required>
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+        </select>
+    </div>
+
+</div>
+
+
+            <button
+                type="submit"
+                class="primary-button"
+                id="saveButton"
+            >
+                Add Availability
+            </button>
+
+
+            <div
+                id="statusMessage"
+                class="status-message"
+            ></div>
+
+        </form>
+
+    </section>
+
+    <!-- WEBSITE BOOKINGS -->
+
+<section class="card">
+    <h2>Website Bookings</h2>
+
+    <p class="description">
+        Appointments booked through your website will appear here.
+    </p>
+
+    <div
+        id="bookingsList"
+        class="availability-list"
+    >
+        <div class="empty-message">
+            Loading bookings...
+        </div>
+    </div>
+</section>
+
+<!-- RESCHEDULE BOOKING -->
+
+<section class="card" id="rescheduleCard" style="display: none;">
+
+    <h2>Reschedule Booking</h2>
+
+    <p class="description" id="rescheduleClient"></p>
+
+    <label for="rescheduleDate">
+        New Date
+    </label>
+
+    <input
+        type="date"
+        id="rescheduleDate"
+    >
+
+    <label>New Start Time</label>
+
+    <div class="time-row">
+        <div>
+            <select id="rescheduleHour">
+                <option value="">Hour</option>
+                <option>1</option><option>2</option><option>3</option>
+                <option>4</option><option>5</option><option>6</option>
+                <option>7</option><option>8</option><option>9</option>
+                <option>10</option><option>11</option><option>12</option>
+            </select>
+
+            <select id="rescheduleMinute">
+                <option value="00">00</option>
+                <option value="30">30</option>
+            </select>
+
+            <select id="reschedulePeriod">
+                <option value="AM">AM</option>
+                <option value="PM">PM</option>
+            </select>
+        </div>
+    </div>
+
+    <button
+        type="button"
+        class="primary-button"
+        id="saveRescheduleButton"
+    >
+        Save New Appointment
+    </button>
+<button
+    type="button"
+    class="edit-button"
+    id="cancelRescheduleButton"
+    style="margin-top: 10px;"
+>
+    Cancel
+</button>
+</section>
+
+<!-- GOOGLE APPOINTMENT BREAKS -->
+
+<section class="card">
+    <h2>Google Appointment Breaks</h2>
+
+    <p class="description">
+        Remove the automatic 1-hour break after a specific Google Calendar appointment.
+    </p>
+
+    <label for="breakOverrideDate">
+        Appointment Date
+    </label>
+
+    <input
+        type="date"
+        id="breakOverrideDate"
+    >
+
+  <label>Appointment Start Time</label>
+
+<div class="time-row">
+    <div>
+        <select id="breakOverrideHour">
+            <option value="">Hour</option>
+            <option>1</option><option>2</option><option>3</option>
+            <option>4</option><option>5</option><option>6</option>
+            <option>7</option><option>8</option><option>9</option>
+            <option>10</option><option>11</option><option>12</option>
+        </select>
+
+        <select id="breakOverrideMinute">
+            <option value="00">00</option>
+            <option value="30">30</option>
+        </select>
+
+        <select id="breakOverridePeriod">
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+        </select>
+    </div>
+</div>
+
+    <button
+        type="button"
+        class="primary-button"
+        id="addBreakOverrideButton"
+    >
+        Remove Break After Appointment
+    </button>
+
+    <div
+        id="breakOverridesList"
+        class="availability-list"
+        style="margin-top: 18px;"
+    ></div>
+</section>
+    <!-- CURRENT AVAILABILITY -->
+
+    <section class="card">
+
+        <h2>
+            Your Working Days
+        </h2>
+
+        <p class="description">
+            These are the dates clients can potentially
+            book. Your calendar appointments and treatment
+            lengths are checked automatically.
+        </p>
+
+
+        <div
+            id="availabilityList"
+            class="availability-list"
+        >
+
+            <div class="empty-message">
+                Loading your availability...
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <div class="admin-note">
+        Private LASH'D. management page.
+        Client booking availability updates automatically.
+    </div>
+
+</div>
+
+
+<script>
+const SUPABASE_URL = "https://yiijzymvssapoqlaujhj.supabase.co";
+const SUPABASE_KEY = "sb_publishable_VA7q3ESd20pZp3rIGVLjDg_kG8ll8PO";
+
+const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+const ADMIN_EMAIL = "lashdbysara.uk@gmail.com";
+
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const availabilityForm =
+    document.getElementById("availabilityForm");
+
+const availabilityDate =
+    document.getElementById("availabilityDate");
+    const startHour =
+    document.getElementById("startHour");
+
+const startMinute =
+    document.getElementById("startMinute");
+
+const startPeriod =
+    document.getElementById("startPeriod");
+
+const endHour =
+    document.getElementById("endHour");
+
+const endMinute =
+    document.getElementById("endMinute");
+
+const endPeriod =
+    document.getElementById("endPeriod");
+
+
+const availabilityList =
+    document.getElementById("availabilityList");
+
+const statusMessage =
+    document.getElementById("statusMessage");
+
+const saveButton =
+    document.getElementById("saveButton");
+
+const formTitle =
+    document.getElementById("formTitle");
+
+let availability = [];
+let bookings = [];
+let editingId = null;
+
+const bookingsList =
+    document.getElementById("bookingsList");
+    const rescheduleCard =
+    document.getElementById("rescheduleCard");
+
+const rescheduleClient =
+    document.getElementById("rescheduleClient");
+
+const rescheduleDate =
+    document.getElementById("rescheduleDate");
+
+const rescheduleHour =
+    document.getElementById("rescheduleHour");
+
+const rescheduleMinute =
+    document.getElementById("rescheduleMinute");
+
+const reschedulePeriod =
+    document.getElementById("reschedulePeriod");
+
+const saveRescheduleButton =
+    document.getElementById("saveRescheduleButton");
+
+const cancelRescheduleButton =
+    document.getElementById("cancelRescheduleButton");
+
+let reschedulingBooking = null;
+
+cancelRescheduleButton.addEventListener(
+    "click",
+    () => {
+        reschedulingBooking = null;
+
+        rescheduleDate.value = "";
+        rescheduleHour.value = "";
+        rescheduleMinute.value = "00";
+        reschedulePeriod.value = "AM";
+        rescheduleClient.textContent = "";
+
+        rescheduleCard.style.display = "none";
+    }
+);
+    const breakOverrideDate =
+    document.getElementById("breakOverrideDate");
+
+const breakOverrideHour =
+    document.getElementById("breakOverrideHour");
+
+const breakOverrideMinute =
+    document.getElementById("breakOverrideMinute");
+
+const breakOverridePeriod =
+    document.getElementById("breakOverridePeriod");
+
+const addBreakOverrideButton =
+    document.getElementById("addBreakOverrideButton");
+
+const breakOverridesList =
+    document.getElementById("breakOverridesList");
+
+let breakOverrides = [];/* =========================
+   START ADMIN
+========================= */
+
+
+/* =========================
+   LOGIN
+========================= */
+
+function createLoginScreen() {
+    const page =
+        document.querySelector(".admin-page");
+
+    page.innerHTML = `
+        <div class="brand">
+            <h1>LASH'D. by Sara</h1>
+            <p>Private Admin</p>
+        </div>
+
+        <section class="card">
+            <h2>Admin Login</h2>
+
+            <p class="description">
+                Enter your LASH'D email and we'll
+                send you a secure login link.
+            </p>
+
+            <form id="loginForm">
+
+                <label for="adminEmail">
+                    Email
+                </label>
+
+                <input
+                    id="adminEmail"
+                    type="email"
+                    value="${ADMIN_EMAIL}"
+                    required
+                >
+
+                <button
+                    class="primary-button"
+                    type="submit"
+                    id="loginButton"
+                >
+                    Send Login Link
+                </button>
+
+                <div
+                    id="loginMessage"
+                    class="status-message"
+                ></div>
+
+            </form>
+        </section>
+    `;
+
+    document
+        .getElementById("loginForm")
+        .addEventListener(
+            "submit",
+            sendLoginLink
+        );
+}
+
+
+async function sendLoginLink(event) {
+    event.preventDefault();
+
+    const email =
+        document
+            .getElementById("adminEmail")
+            .value
+            .trim()
+            .toLowerCase();
+
+    const message =
+        document.getElementById(
+            "loginMessage"
+        );
+
+    const button =
+        document.getElementById(
+            "loginButton"
+        );
+
+    if (email !== ADMIN_EMAIL) {
+        message.textContent =
+            "This email is not authorised.";
+
+        message.className =
+            "status-message error";
+
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Sending...";
+
+    const redirectTo =
+        window.location.origin +
+        window.location.pathname;
+
+    const { error } =
+        await db.auth.signInWithOtp({
+            email: email,
+            options: {
+                emailRedirectTo:
+                    redirectTo
+            }
+        });
+
+    button.disabled = false;
+    button.textContent =
+        "Send Login Link";
+
+    if (error) {
+        console.error(error);
+
+        message.textContent =
+            "Login link couldn't be sent. Please try again.";
+
+        message.className =
+            "status-message error";
+
+        return;
+    }
+
+    message.textContent =
+        "Login link sent! Check your LASH'D email.";
+
+    message.className =
+        "status-message success";
+}
+
+
+/* =========================
+   HELPERS
+========================= */
+
+function showMessage(message, type) {
+    statusMessage.textContent = message;
+
+    statusMessage.className =
+        "status-message " + type;
+}
+
+
+function clearMessage() {
+    statusMessage.textContent = "";
+
+    statusMessage.className =
+        "status-message";
+}
+
+
+function formatDisplayDate(dateString) {
+    const date =
+        new Date(
+            dateString + "T12:00:00"
+        );
+
+    return date.toLocaleDateString(
+        "en-GB",
+        {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        }
+    );
+}
+
+function formatDisplayTime(time) {
+    if (!time) return "";
+
+    // Already in 12-hour format
+    if (
+        time.toUpperCase().includes("AM") ||
+        time.toUpperCase().includes("PM")
+    ) {
+        return time
+            .toUpperCase()
+            .replace(/\s+/g, " ")
+            .trim();
+    }
+
+    // Convert 24-hour time to 12-hour format
+    const parts = time.split(":");
+
+    let hour = Number(parts[0]);
+    const minute = parts[1];
+
+    const period =
+        hour >= 12 ? "PM" : "AM";
+
+    hour = hour % 12 || 12;
+
+    return (
+        hour +
+        ":" +
+        minute +
+        " " +
+        period
+    );
+}
+function convert12To24(hour, minute, period) {
+    let h = Number(hour);
+
+    if (period === "PM" && h !== 12) {
+        h += 12;
+    }
+
+    if (period === "AM" && h === 12) {
+        h = 0;
+    }
+
+    return (
+        String(h).padStart(2, "0") +
+        ":" +
+        minute
+    );
+}
+
+/* =========================
+   LOAD AVAILABILITY
+========================= */
+
+async function loadAvailability() {
+    const today =
+        new Date().toLocaleDateString(
+            "en-CA",
+            {
+                timeZone:
+                    "Europe/London"
+            }
+        );
+
+    const { data, error } =
+        await db
+            .from("availability")
+            .select("*")
+            .gte(
+                "availability_date",
+                today
+            )
+            .order(
+                "availability_date",
+                {
+                    ascending: true
+                }
+            )
+            .order(
+                "start_time",
+                {
+                    ascending: true
+                }
+            );
+
+    if (error) {
+        console.error(error);
+
+        availabilityList.innerHTML = `
+            <div class="empty-message">
+                Availability couldn't be loaded.
+            </div>
+        `;
+
+        return;
+    }
+
+    availability = data || [];
+
+    renderAvailability();
+}
+
+
+/* =========================
+   DISPLAY AVAILABILITY
+========================= */
+
+function renderAvailability() {
+    availabilityList.innerHTML = "";
+
+    if (availability.length === 0) {
+        availabilityList.innerHTML = `
+            <div class="empty-message">
+                You haven't added any working
+                days yet.
+            </div>
+        `;
+
+        return;
+    }
+
+    availability.forEach(item => {
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "availability-item";
+
+        const date =
+            document.createElement("div");
+
+        date.className =
+            "availability-date";
+
+        date.textContent =
+            formatDisplayDate(
+                item.availability_date
+            );
+
+        const time =
+            document.createElement("div");
+
+        time.className =
+            "availability-time";
+
+        time.textContent =
+            formatDisplayTime(
+                item.start_time
+            ) +
+            " – " +
+            formatDisplayTime(
+                item.end_time
+            );
+
+        const actions =
+            document.createElement("div");
+
+        actions.className =
+            "availability-actions";
+
+        const editButton =
+            document.createElement("button");
+
+        editButton.type = "button";
+
+        editButton.className =
+            "edit-button";
+
+        editButton.textContent =
+            "Edit";
+
+        editButton.onclick =
+            () => editAvailability(item);
+
+        const deleteButton =
+            document.createElement("button");
+
+        deleteButton.type = "button";
+
+        deleteButton.className =
+            "delete-button";
+
+        deleteButton.textContent =
+            "Remove";
+
+        deleteButton.onclick =
+            () => removeAvailability(item);
+
+        actions.appendChild(
+            editButton
+        );
+
+        actions.appendChild(
+            deleteButton
+        );
+
+        card.appendChild(date);
+        card.appendChild(time);
+        card.appendChild(actions);
+
+        availabilityList.appendChild(
+            card
+        );
+    });
+}
+
+
+/* =========================
+   EDIT
+========================= */
+
+function editAvailability(item) {
+    editingId = item.id;
+
+    availabilityDate.value =
+        item.availability_date;
+
+  const startFormatted =
+    formatDisplayTime(item.start_time);
+
+const startParts =
+    startFormatted.match(
+        /^(\d{1,2}):(\d{2})\s(AM|PM)$/
+    );
+
+const endFormatted =
+    formatDisplayTime(item.end_time);
+
+const endParts =
+    endFormatted.match(
+        /^(\d{1,2}):(\d{2})\s(AM|PM)$/
+    );
+
+if (startParts) {
+    startHour.value = startParts[1];
+    startMinute.value = startParts[2];
+    startPeriod.value = startParts[3];
+}
+
+if (endParts) {
+    endHour.value = endParts[1];
+    endMinute.value = endParts[2];
+    endPeriod.value = endParts[3];
+}
+
+
+    formTitle.textContent =
+        "Edit Availability";
+
+    saveButton.textContent =
+        "Save Changes";
+
+    clearMessage();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+/* =========================
+   ADD / UPDATE
+========================= */
+
+availabilityForm.addEventListener(
+    "submit",
+    async event => {
+        event.preventDefault();
+
+        clearMessage();
+
+      const startTimeValue = convert12To24(
+    startHour.value,
+    startMinute.value,
+    startPeriod.value
+);
+
+const endTimeValue = convert12To24(
+    endHour.value,
+    endMinute.value,
+    endPeriod.value
+);
+
+if (
+    !availabilityDate.value ||
+    !startHour.value ||
+    !endHour.value
+) {
+            showMessage(
+                "Please complete all fields.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (
+    endTimeValue <=
+    startTimeValue
+) {
+            showMessage(
+                "Your finish time must be later than your start time.",
+                "error"
+            );
+
+            return;
+        }
+
+        saveButton.disabled = true;
+
+        saveButton.textContent =
+            editingId
+                ? "Saving..."
+                : "Adding...";
+
+        let result;
+
+        if (editingId) {
+            result =
+                await db
+                    .from("availability")
+                    .update({
+                        availability_date:
+                            availabilityDate.value,
+
+                        start_time:
+                           startTimeValue,
+
+                       end_time:
+   endTimeValue
+                    })
+                    .eq(
+                        "id",
+                        editingId
+                    );
+        } else {
+            result =
+                await db
+                    .from("availability")
+                    .insert({
+                        availability_date:
+                            availabilityDate.value,
+
+                       start_time:
+    startTimeValue,
+
+end_time:
+    endTimeValue
+                    });
+        }
+
+        saveButton.disabled = false;
+
+        if (result.error) {
+            console.error(
+                result.error
+            );
+
+            saveButton.textContent =
+                editingId
+                    ? "Save Changes"
+                    : "Add Availability";
+
+            showMessage(
+                "Couldn't save availability. Please try again.",
+                "error"
+            );
+
+            return;
+        }
+
+        const wasEditing =
+            editingId !== null;
+
+        editingId = null;
+
+        availabilityForm.reset();
+
+        formTitle.textContent =
+            "Add Availability";
+
+        saveButton.textContent =
+            "Add Availability";
+
+        showMessage(
+            wasEditing
+                ? "Availability updated."
+                : "Availability added.",
+            "success"
+        );
+
+        await loadAvailability();
+    }
+);
+
+
+/* =========================
+   REMOVE
+========================= */
+
+async function removeAvailability(item) {
+    const confirmed =
+        confirm(
+            "Remove availability for " +
+            formatDisplayDate(
+                item.availability_date
+            ) +
+            "?"
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    const { error } =
+        await db
+            .from("availability")
+            .delete()
+            .eq(
+                "id",
+                item.id
+            );
+
+    if (error) {
+        console.error(error);
+
+        showMessage(
+            "Couldn't remove availability.",
+            "error"
+        );
+
+        return;
+    }
+
+    showMessage(
+        "Availability removed.",
+        "success"
+    );
+
+    await loadAvailability();
+}
+
+/* =========================
+   WEBSITE BOOKINGS
+========================= */
+
+async function loadBookings() {
+    const today =
+        new Date().toLocaleDateString(
+            "en-CA",
+            { timeZone: "Europe/London" }
+        );
+
+    const { data, error } =
+        await db
+            .from("bookings")
+            .select("*")
+            .gte("appointment_date", today)
+            .order("appointment_date", {
+                ascending: true
+            })
+            .order("appointment_time", {
+                ascending: true
+            });
+
+    if (error) {
+        console.error(error);
+
+        bookingsList.innerHTML = `
+            <div class="empty-message">
+                Bookings couldn't be loaded.
+            </div>
+        `;
+
+        return;
+    }
+
+    bookings = data || [];
+    renderBookings();
+}
+
+
+function renderBookings() {
+    bookingsList.innerHTML = "";
+
+    if (bookings.length === 0) {
+        bookingsList.innerHTML = `
+            <div class="empty-message">
+                No upcoming website bookings.
+            </div>
+        `;
+        return;
+    }
+
+    bookings.forEach(item => {
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "availability-item";
+
+      card.innerHTML = `
+    <div class="availability-date">
+        ${formatDisplayDate(
+            item.appointment_date
+        )}
+    </div>
+
+    <div class="availability-time">
+        ${formatDisplayTime(
+            item.appointment_time
+        )}
+        · ${item.client_name || "Client"}
+  ${item.treatments ? `<br>${item.treatments.split(" | ").join(" + ")}` : ""}
+        <br>Break: ${item.use_normal_break === false ? "Removed" : "Normal"}
+    </div>
+`;
+
+        const actions =
+            document.createElement("div");
+
+        actions.className =
+            "availability-actions";
+
+            const rescheduleButton =
+    document.createElement("button");
+
+rescheduleButton.type = "button";
+rescheduleButton.className = "edit-button";
+rescheduleButton.textContent = "Reschedule";
+
+rescheduleButton.onclick =
+    () => rescheduleBooking(item);
+
+actions.appendChild(rescheduleButton);
+const breakButton =
+    document.createElement("button");
+
+breakButton.type = "button";
+breakButton.className = "edit-button";
+
+breakButton.textContent =
+    item.use_normal_break === false
+        ? "Restore Break"
+        : "Remove Break";
+
+breakButton.onclick =
+    () => toggleBookingBreak(item);
+
+actions.appendChild(breakButton);
+
+        const deleteButton =
+            document.createElement("button");
+
+        deleteButton.type = "button";
+        deleteButton.className =
+            "delete-button";
+        deleteButton.textContent =
+            "Delete Booking";
+
+        deleteButton.onclick =
+            () => removeBooking(item);
+
+        actions.appendChild(deleteButton);
+        card.appendChild(actions);
+
+        bookingsList.appendChild(card);
+    });
+}
+
+function rescheduleBooking(item) {
+    reschedulingBooking = item;
+
+    rescheduleClient.textContent =
+        (item.client_name || "Client") +
+        " · " +
+        formatDisplayDate(item.appointment_date);
+
+    rescheduleDate.value =
+        item.appointment_date;
+
+    const currentTime =
+        formatDisplayTime(
+            item.appointment_time
+        );
+
+    const parts =
+        currentTime.match(
+            /^(\d{1,2}):(\d{2})\s(AM|PM)$/
+        );
+
+    if (parts) {
+        rescheduleHour.value =
+            parts[1];
+
+        rescheduleMinute.value =
+            parts[2];
+
+        reschedulePeriod.value =
+            parts[3];
+    }
+
+    rescheduleCard.style.display =
+        "block";
+
+    rescheduleCard.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+
+saveRescheduleButton.addEventListener(
+    "click",
+    async () => {
+
+        if (!reschedulingBooking) {
+            return;
+        }
+
+        if (
+            !rescheduleDate.value ||
+            !rescheduleHour.value
+        ) {
+            alert(
+                "Choose the new date and time."
+            );
+            return;
+        }
+
+        const newTime =
+            convert12To24(
+                rescheduleHour.value,
+                rescheduleMinute.value,
+                reschedulePeriod.value
+            );
+const startParts =
+    newTime.split(":");
+
+const startMinutes =
+    Number(startParts[0]) * 60 +
+    Number(startParts[1]);
+
+const duration =
+    Number(
+        reschedulingBooking.duration_minutes
+    );
+
+const buffer =
+    reschedulingBooking.use_normal_break === false
+        ? 0
+        : Number(
+            reschedulingBooking.buffer_minutes
+        );
+
+if (!duration) {
+    alert(
+        "This older booking has no treatment duration saved, so it can't be automatically rescheduled."
+    );
+    return;
+}
+
+const endMinutes =
+    startMinutes + duration;
+
+const blockedMinutes =
+    endMinutes + buffer;
+
+const newEndTime =
+    String(
+        Math.floor(endMinutes / 60)
+    ).padStart(2, "0") +
+    ":" +
+    String(
+        endMinutes % 60
+    ).padStart(2, "0");
+
+const newBlockedUntil =
+    String(
+        Math.floor(blockedMinutes / 60)
+    ).padStart(2, "0") +
+    ":" +
+    String(
+        blockedMinutes % 60
+    ).padStart(2, "0");
+        saveRescheduleButton.disabled =
+            true;
+
+        saveRescheduleButton.textContent =
+            "Saving...";
+
+        const { error } =
+            await db
+                .from("bookings")
+               .update({
+    appointment_date:
+        rescheduleDate.value,
+
+    appointment_time:
+        newTime,
+
+    appointment_end_time:
+        newEndTime,
+
+    blocked_until:
+        newBlockedUntil
+})
+                .eq(
+                    "id",
+                    reschedulingBooking.id
+                );
+
+        saveRescheduleButton.disabled =
+            false;
+
+        saveRescheduleButton.textContent =
+            "Save New Appointment";
+
+        if (error) {
+            console.error(error);
+
+            alert(
+                "Couldn't reschedule booking."
+            );
+
+            return;
+        }
+
+        reschedulingBooking = null;
+
+        rescheduleCard.style.display =
+            "none";
+
+        await loadBookings();
+    }
+);
+async function toggleBookingBreak(item) {
+    const newValue =
+        item.use_normal_break === false;
+
+    const { error } =
+        await db
+            .from("bookings")
+            .update({
+                use_normal_break: newValue
+            })
+            .eq("id", item.id);
+
+    if (error) {
+        console.error(error);
+        alert("Couldn't update the break.");
+        return;
+    }
+
+    await loadBookings();
+}
+
+async function removeBooking(item) {
+    const confirmed =
+        confirm(
+            "Delete this booking for " +
+            formatDisplayDate(
+                item.appointment_date
+            ) +
+            " at " +
+            formatDisplayTime(
+                item.appointment_time
+            ) +
+            "?"
+        );
+
+    if (!confirmed) return;
+
+    const { error } =
+        await db
+            .from("bookings")
+            .delete()
+            .eq("id", item.id);
+
+    if (error) {
+        console.error(error);
+        alert("Couldn't delete booking.");
+        return;
+    }
+
+    await loadBookings();
+}
+
+async function loadBreakOverrides() {
+    const { data, error } =
+        await db
+            .from("break_overrides")
+            .select("*")
+            .order("appointment_date", {
+                ascending: true
+            })
+            .order("appointment_time", {
+                ascending: true
+            });
+
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    breakOverrides = data || [];
+    renderBreakOverrides();
+}
+
+
+function renderBreakOverrides() {
+    breakOverridesList.innerHTML = "";
+
+    if (breakOverrides.length === 0) {
+        breakOverridesList.innerHTML = `
+            <div class="empty-message">
+                No Google appointment breaks removed.
+            </div>
+        `;
+        return;
+    }
+
+    breakOverrides.forEach(item => {
+        const card =
+            document.createElement("div");
+
+        card.className = "availability-item";
+
+        card.innerHTML = `
+            <div class="availability-date">
+                ${formatDisplayDate(item.appointment_date)}
+            </div>
+
+            <div class="availability-time">
+                ${formatDisplayTime(item.appointment_time)}
+                · Break removed
+            </div>
+        `;
+
+        const restoreButton =
+            document.createElement("button");
+
+        restoreButton.type = "button";
+        restoreButton.className = "edit-button";
+        restoreButton.textContent = "Restore Break";
+
+        restoreButton.onclick =
+            () => removeBreakOverride(item);
+
+        card.appendChild(restoreButton);
+        breakOverridesList.appendChild(card);
+    });
+}
+
+
+addBreakOverrideButton.addEventListener(
+    "click",
+    async () => {
+
+        if (
+            !breakOverrideDate.value ||
+            !breakOverrideHour.value
+        ) {
+            alert(
+                "Choose the appointment date and start time."
+            );
+            return;
+        }
+
+        const breakOverrideTime =
+            convert12To24(
+                breakOverrideHour.value,
+                breakOverrideMinute.value,
+                breakOverridePeriod.value
+            );
+
+        const { error } =
+            await db
+                .from("break_overrides")
+                .insert({
+                    appointment_date:
+                        breakOverrideDate.value,
+
+                    appointment_time:
+                        breakOverrideTime
+                });
+
+        if (error) {
+            console.error(error);
+
+            alert(
+                "Couldn't remove the break."
+            );
+
+            return;
+        }
+
+        breakOverrideDate.value = "";
+        breakOverrideHour.value = "";
+        breakOverrideMinute.value = "00";
+        breakOverridePeriod.value = "AM";
+
+        await loadBreakOverrides();
+    }
+);
+
+
+async function removeBreakOverride(item) {
+    const { error } =
+        await db
+            .from("break_overrides")
+            .delete()
+            .eq("id", item.id);
+
+    if (error) {
+        console.error(error);
+        alert("Couldn't restore the break.");
+        return;
+    }
+
+    await loadBreakOverrides();
+}
+/* =========================
+   START ADMIN
+========================= */
+
+async function startAdmin() {
+    const {
+        data: { session }
+    } =
+        await db.auth.getSession();
+
+    if (!session) {
+        createLoginScreen();
+        return;
+    }
+
+    const email =
+        session.user.email
+            ?.toLowerCase();
+
+    if (email !== ADMIN_EMAIL) {
+        await db.auth.signOut();
+
+        createLoginScreen();
+        return;
+    }
+
+await loadAvailability();
+await loadBookings();
+await loadBreakOverrides();
+}
+
+startAdmin();
+
+</script>
+
+</body>
+</html>

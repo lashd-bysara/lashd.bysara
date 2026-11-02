@@ -27,7 +27,7 @@
     inset: 0;
     z-index: 999999;
     background: #f5f0ea;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     padding: 30px;
@@ -967,8 +967,31 @@
         "sb_publishable_VA7q3ESd20pZp3rIGVLjDg_kG8ll8PO";
 
     let lashdBookedSlots = [];
-    let currentReservationCreated = false;
+let lashdBreakOverrides = [];
+let currentReservationCreated = false;
 
+async function loadLashdBreakOverrides() {
+    const response = await fetch(
+        LASHD_SUPABASE_URL +
+        "/rest/v1/break_overrides?select=*",
+        {
+            headers: {
+                "apikey": LASHD_SUPABASE_KEY
+            }
+        }
+    );
+
+    if (!response.ok) {
+        console.error(
+            "Couldn't load break overrides."
+        );
+        lashdBreakOverrides = [];
+        return;
+    }
+
+    lashdBreakOverrides =
+        await response.json();
+}
     async function loadLashdBookedSlots() {
         const response = await fetch(
             LASHD_SUPABASE_URL + "/rest/v1/rpc/get_booked_slots",
@@ -1194,13 +1217,26 @@ function lashdGoogleConflict(
                 getPart(startParts, "minute")
             );
 
-        const googleEnd =
-            Number(
-                getPart(endParts, "hour")
-            ) * 60 +
-            Number(
-                getPart(endParts, "minute")
-            );
+        const googleStartTime =
+    String(
+        Number(getPart(startParts, "hour"))
+    ).padStart(2, "0") +
+    ":" +
+    String(
+        Number(getPart(startParts, "minute"))
+    ).padStart(2, "0");
+
+const breakRemoved =
+    lashdBreakOverrides.some(item =>
+        item.appointment_date === dateKey &&
+        item.appointment_time.slice(0, 5) ===
+            googleStartTime
+    );
+
+const googleEnd =
+    Number(getPart(endParts, "hour")) * 60 +
+    Number(getPart(endParts, "minute")) +
+    (breakRemoved ? 0 : 60);
 
         return lashdPeriodsOverlap(
             candidateStart,
@@ -1249,10 +1285,19 @@ function lashdWebsiteBookingConflict(
            old start time rather than crashing.
         */
 
-        let bookedEnd =
-            lashdTimeToMinutes(
-                slot.blocked_until
-            );
+       let bookedEnd;
+
+if (slot.use_normal_break === false) {
+    bookedEnd =
+        lashdTimeToMinutes(
+            slot.appointment_end_time
+        );
+} else {
+    bookedEnd =
+        lashdTimeToMinutes(
+            slot.blocked_until
+        );
+}
 
         if (bookedEnd === null) {
 
@@ -1510,7 +1555,12 @@ function getOpenTimesForDate(date) {
                     clientDetails.lastName,
 
                 p_client_email:
-                    clientDetails.email
+    clientDetails.email,
+
+p_treatments:
+    basket
+        .map(item => item.name)
+        .join(" | ")
             })
         }
     );
@@ -3244,6 +3294,7 @@ async function loadLashdGoogleBusy(
 
         await loadLashdAvailability();
         await loadLashdBookedSlots();
+        await loadLashdBreakOverrides();
 
         if (lashdAvailability.length > 0) {
 
