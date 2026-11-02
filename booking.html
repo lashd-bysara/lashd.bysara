@@ -27,7 +27,7 @@
     inset: 0;
     z-index: 999999;
     background: #f5f0ea;
-    display: none;
+   display: flex;
     align-items: center;
     justify-content: center;
     padding: 30px;
@@ -1593,7 +1593,19 @@ p_treatments:
 
             throw error;
         }
+if (
+    errorText.includes(
+        "BOOKING_NOT_ACCEPTED"
+    )
+) {
+    const error =
+        new Error("BOOKING_NOT_ACCEPTED");
 
+    error.code =
+        "BOOKING_NOT_ACCEPTED";
+
+    throw error;
+}
         throw new Error(
             "Could not reserve booking"
         );
@@ -3944,11 +3956,17 @@ async function loadLashdGoogleBusy(
                         top: dateTimeSection.offsetTop - 80,
                         behavior: "smooth"
                     });
-                } else {
-                    alert(
-                        "Your booking could not be completed. Please check your internet connection and try again."
-                    );
-                }
+                } else if (
+    error.code === "BOOKING_NOT_ACCEPTED"
+) {
+    alert(
+        "We’re unable to accept this booking."
+    );
+} else {
+    alert(
+        "Your booking could not be completed. Please check your internet connection and try again."
+    );
+}
 
 
                 submitButton.disabled =
