@@ -17,7 +17,7 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css">
+   <link rel="stylesheet" href="style.css?v=2">
 </head>
 
 <body>
@@ -26,23 +26,57 @@
 
     <header>
 
-        <a href="index.html" class="logo logo-link">
-    <img src="lashd-logo.png" alt="LASH'D. by Sara" class="header-logo">
-</a>
+    <a href="index.html" class="logo logo-link">
+        <img src="lashd-logo.png" alt="LASH'D. by Sara" class="header-logo">
+    </a>
 
-        <nav>
-            <a href="index.html">HOME</a>
-            <a href="treatments.html">TREATMENTS</a>
-            <a href="index.html#gallery">GALLERY</a>
-            <a href="index.html#about">ABOUT</a>
-            <a href="policies.html">POLICIES</a>
-        </nav>
+    <nav class="desktop-nav">
+        <a href="index.html">HOME</a>
+        <a href="treatments.html">TREATMENTS</a>
+        <a href="index.html#gallery">GALLERY</a>
+        <a href="index.html#about">ABOUT</a>
+        <a href="policies.html">POLICIES</a>
+    </nav>
+
+    <div class="header-actions">
 
         <a href="booking.html" class="nav-book">
             BOOK NOW
         </a>
 
-    </header>
+        <button
+            type="button"
+            class="mobile-menu-button"
+            id="mobileMenuButton"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+            aria-controls="mobileMenu"
+        >
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+    </div>
+
+    <div class="mobile-menu" id="mobileMenu">
+
+        <nav class="mobile-nav">
+            <a href="index.html">HOME</a>
+            <a href="treatments.html">TREATMENTS</a>
+            <a href="index.html#gallery">GALLERY</a>
+            <a href="index.html#about">ABOUT</a>
+            <a href="policies.html">POLICIES & CLIENT INFO</a>
+        </nav>
+
+        <div class="mobile-menu-bottom">
+            <p>LASH'D. BY SARA</p>
+            <span>MANCHESTER · BY APPOINTMENT</span>
+        </div>
+
+    </div>
+
+</header>
 
 
     <!-- HERO -->
@@ -953,8 +987,42 @@
 
         </div>
 
-    </footer>
+ </footer>
+
+<script>
+    const mobileMenuButton = document.getElementById("mobileMenuButton");
+    const mobileMenu = document.getElementById("mobileMenu");
+
+    if (mobileMenuButton && mobileMenu) {
+
+        mobileMenuButton.addEventListener("click", () => {
+
+            const isOpen = mobileMenu.classList.toggle("is-open");
+
+            mobileMenuButton.classList.toggle("is-open", isOpen);
+            mobileMenuButton.setAttribute("aria-expanded", isOpen);
+
+            document.body.classList.toggle("menu-open", isOpen);
+        });
+
+        mobileMenu.querySelectorAll("a").forEach(link => {
+
+            link.addEventListener("click", () => {
+
+                mobileMenu.classList.remove("is-open");
+                mobileMenuButton.classList.remove("is-open");
+
+                mobileMenuButton.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+                document.body.classList.remove("menu-open");
+            });
+
+        });
+    }
+</script>
 
 </body>
-
 </html>
