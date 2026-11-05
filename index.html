@@ -35,32 +35,70 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css">
+  
+<link rel="stylesheet" href="style.css?v=2">
+
 </head>
 
 <body>
 
     <!-- HEADER -->
 
-    <header>
+   <header>
 
-        <a href="index.html" class="logo logo-link">
-    <img src="lashd-logo.png" alt="LASH'D. by Sara" class="header-logo">
-</a>
+    <a href="index.html" class="logo logo-link">
+        <img src="lashd-logo.png" alt="LASH'D. by Sara" class="header-logo">
+    </a>
 
-        <nav>
-            <a href="index.html">HOME</a>
-            <a href="treatments.html">TREATMENTS</a>
-            <a href="#gallery">GALLERY</a>
-            <a href="#about">ABOUT</a>
-            <a href="policies.html">POLICIES</a>
-        </nav>
+    <!-- DESKTOP NAVIGATION -->
+    <nav class="desktop-nav">
+        <a href="index.html">HOME</a>
+        <a href="treatments.html">TREATMENTS</a>
+        <a href="#gallery">GALLERY</a>
+        <a href="#about">ABOUT</a>
+        <a href="policies.html">POLICIES</a>
+    </nav>
+
+    <div class="header-actions">
 
         <a href="booking.html" class="nav-book">
             BOOK NOW
         </a>
 
-    </header>
+        <button
+            type="button"
+            class="mobile-menu-button"
+            id="mobileMenuButton"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+            aria-controls="mobileMenu"
+        >
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+    </div>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobileMenu">
+
+        <nav class="mobile-nav">
+            <a href="index.html">HOME</a>
+            <a href="treatments.html">TREATMENTS</a>
+            <a href="#gallery">GALLERY</a>
+            <a href="#about">ABOUT</a>
+            <a href="policies.html">POLICIES & CLIENT INFO</a>
+        </nav>
+
+        <div class="mobile-menu-bottom">
+            <p>LASH'D. BY SARA</p>
+            <span>MANCHESTER · BY APPOINTMENT</span>
+        </div>
+
+    </div>
+
+</header>
 
 
     <!-- HERO -->
@@ -1012,20 +1050,68 @@
 
     </footer>
 <script>
+    /* =========================
+       GALLERY VIEW MORE
+    ========================= */
+
     const galleryToggle = document.getElementById("galleryToggle");
     const galleryMore = document.getElementById("galleryMore");
 
-    galleryToggle.addEventListener("click", () => {
-        const isOpen = galleryMore.classList.toggle("is-open");
+    if (galleryToggle && galleryMore) {
+        galleryToggle.addEventListener("click", () => {
+            const isOpen = galleryMore.classList.toggle("is-open");
 
-        galleryToggle.textContent = isOpen ? "VIEW LESS" : "VIEW MORE";
+            galleryToggle.textContent = isOpen ? "VIEW LESS" : "VIEW MORE";
 
-        if (!isOpen) {
-            document.getElementById("gallery").scrollIntoView({
-                behavior: "smooth"
+            if (!isOpen) {
+                document.getElementById("gallery").scrollIntoView({
+                    behavior: "smooth"
+                });
+            }
+        });
+    }
+
+
+    /* =========================
+       MOBILE MENU
+    ========================= */
+
+    const mobileMenuButton = document.getElementById("mobileMenuButton");
+    const mobileMenu = document.getElementById("mobileMenu");
+
+    if (mobileMenuButton && mobileMenu) {
+
+        mobileMenuButton.addEventListener("click", () => {
+
+            const isOpen = mobileMenu.classList.toggle("is-open");
+
+            mobileMenuButton.classList.toggle("is-open", isOpen);
+            mobileMenuButton.setAttribute("aria-expanded", isOpen);
+
+            document.body.classList.toggle("menu-open", isOpen);
+        });
+
+
+        /* CLOSE MENU AFTER CLICKING A LINK */
+
+        mobileMenu.querySelectorAll("a").forEach(link => {
+
+            link.addEventListener("click", () => {
+
+                mobileMenu.classList.remove("is-open");
+                mobileMenuButton.classList.remove("is-open");
+
+                mobileMenuButton.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+                document.body.classList.remove("menu-open");
             });
-        }
-    });
+
+        });
+
+    }
 </script>
 </body>
 

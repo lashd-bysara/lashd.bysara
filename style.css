@@ -4163,3 +4163,310 @@ footer {
     background: #5a3d32;
     color: #f3e7df;
 }
+/* =========================================================
+   LASH'D. MOBILE NAVIGATION
+========================================================= */
+
+/* DESKTOP DEFAULT */
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.mobile-menu-button {
+    display: none;
+}
+
+.mobile-menu {
+    display: none;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 800px) {
+
+    header {
+        height: 85px;
+        padding: 0 20px;
+        position: relative;
+        z-index: 1000;
+    }
+
+
+    /* KEEP DESKTOP NAV HIDDEN */
+
+    .desktop-nav {
+        display: none;
+    }
+
+
+    /* LOGO */
+
+    header .logo-link {
+        position: relative;
+        z-index: 1002;
+        margin-right: auto;
+    }
+
+    header .header-logo {
+        width: 145px;
+        height: 60px;
+        object-fit: contain;
+        object-position: left center;
+    }
+
+
+    /* RIGHT SIDE */
+
+    .header-actions {
+        position: relative;
+        z-index: 1002;
+        display: flex;
+        align-items: center;
+        gap: 13px;
+    }
+
+
+    /* BOOK NOW */
+
+    .nav-book {
+        padding: 11px 13px;
+        font-size: 8px;
+        letter-spacing: 1.3px;
+        white-space: nowrap;
+    }
+
+
+    /* HAMBURGER */
+
+    .mobile-menu-button {
+        width: 31px;
+        height: 31px;
+        padding: 5px 2px;
+        border: 0;
+        background: transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        cursor: pointer;
+    }
+
+    .mobile-menu-button span {
+        display: block;
+        width: 23px;
+        height: 1px;
+        background: #4a2f25;
+        transition:
+            transform 0.3s ease,
+            opacity 0.3s ease;
+    }
+
+
+    /* HAMBURGER → X */
+
+    .mobile-menu-button.is-open span:nth-child(1) {
+        transform: translateY(6px) rotate(45deg);
+    }
+
+    .mobile-menu-button.is-open span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .mobile-menu-button.is-open span:nth-child(3) {
+        transform: translateY(-6px) rotate(-45deg);
+    }
+
+
+    /* FULL MOBILE MENU */
+
+    .mobile-menu {
+        position: absolute;
+        top: 85px;
+        left: 0;
+
+        width: 100%;
+        height: calc(100vh - 85px);
+
+        background: #f5eee6;
+
+        padding: 45px 28px 30px;
+
+        flex-direction: column;
+        justify-content: space-between;
+
+        border-top: 1px solid rgba(74, 47, 37, 0.12);
+
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+
+        transform: translateY(-10px);
+
+        transition:
+            opacity 0.3s ease,
+            transform 0.3s ease,
+            visibility 0.3s ease;
+
+        overflow-y: auto;
+    }
+
+
+    .mobile-menu.is-open {
+        display: flex;
+
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+
+        transform: translateY(0);
+    }
+
+
+    /* MOBILE LINKS */
+
+    .mobile-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .mobile-nav a {
+        display: block;
+
+        padding: 20px 0;
+
+        border-bottom:
+            1px solid rgba(74, 47, 37, 0.15);
+
+        color: #4a2f25;
+        text-decoration: none;
+
+        font-family: "Playfair Display", serif;
+        font-size: 29px;
+        font-weight: 400;
+
+        letter-spacing: 0;
+    }
+
+    .mobile-nav a:first-child {
+        border-top:
+            1px solid rgba(74, 47, 37, 0.15);
+    }
+
+
+    /* BOTTOM DETAILS */
+
+    .mobile-menu-bottom {
+        padding-top: 45px;
+    }
+
+    .mobile-menu-bottom p {
+        font-size: 9px;
+        letter-spacing: 3px;
+        margin-bottom: 9px;
+    }
+
+    .mobile-menu-bottom span {
+        font-size: 8px;
+        letter-spacing: 2px;
+        color: #8c6858;
+    }
+
+
+    /* STOP PAGE SCROLLING WHILE MENU OPEN */
+
+    body.menu-open {
+        overflow: hidden;
+    }
+
+}
+/* =========================================================
+   MOBILE MENU CLOSE BUTTON FIX
+========================================================= */
+
+@media (max-width: 800px) {
+
+    .mobile-menu-button {
+        display: flex !important;
+        position: relative;
+        z-index: 1005;
+        flex-shrink: 0;
+    }
+
+    .mobile-menu-button span {
+        display: block !important;
+        position: relative;
+        width: 23px;
+        height: 1px;
+        background: #4a2f25 !important;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .mobile-menu-button.is-open span:nth-child(1) {
+        transform: translateY(6px) rotate(45deg);
+    }
+
+    .mobile-menu-button.is-open span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .mobile-menu-button.is-open span:nth-child(3) {
+        transform: translateY(-6px) rotate(-45deg);
+    }
+
+    .mobile-menu {
+        z-index: 1001;
+    }
+
+    header .logo-link,
+    .header-actions {
+        z-index: 1005;
+    }
+}
+
+/* MOBILE NAVIGATION VISIBILITY FIX */
+
+@media screen and (max-width: 800px) {
+    .desktop-nav {
+        display: none !important;
+    }
+
+    .header-actions {
+        display: flex !important;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
+    }
+
+    .mobile-menu-button {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        flex-shrink: 0;
+        width: 34px;
+        height: 34px;
+        z-index: 1005;
+    }
+
+    .mobile-menu-button span {
+        display: block !important;
+        width: 23px;
+        height: 2px;
+        background: #4a2f25 !important;
+    }
+
+    .mobile-menu.is-open {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto;
+    }
+}
