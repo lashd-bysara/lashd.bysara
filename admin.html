@@ -352,9 +352,60 @@
 
     </section>
 
+    <section class="card">
+    <h2>Add Manual Appointment</h2>
+    <p class="description">
+        Add appointments booked through Instagram, TikTok or elsewhere.
+    </p>
+
+    <form id="manualBookingForm">
+        <label>Client Name</label>
+        <input type="text" id="manualClientName" required>
+
+        <label>Appointment Date</label>
+        <input type="date" id="manualDate" required>
+
+        <label>Start Time</label>
+  <input type="text" id="manualStart" placeholder="e.g. 12:30" required>
+<select id="manualStartPeriod">
+    <option value="AM">AM</option>
+    <option value="PM">PM</option>
+</select>
+
+        <label>Finish Time</label>
+<input type="text" id="manualEnd" placeholder="e.g. 2:00" required>
+<select id="manualEndPeriod">
+    <option value="AM">AM</option>
+    <option value="PM">PM</option>
+</select>
+
+        <label>Treatment</label>
+        <input type="text" id="manualTreatment"
+               placeholder="e.g. Classic Lashes" required>
+
+        <button type="submit" class="primary-button">
+            Save Manual Appointment
+        </button>
+
+        <div id="manualBookingMessage"
+             class="status-message"></div>
+    </form>
+</section>
     <!-- WEBSITE BOOKINGS -->
 
 <section class="card">
+    <section class="admin-section">
+    <h2>Blocked Clients</h2>
+
+    <p class="section-note">
+        Clients blocked from making future bookings.
+        This information is private and only visible in Admin.
+    </p>
+
+    <div id="blockedClientsList">
+        <p>No blocked clients.</p>
+    </div>
+</section>
     <h2>Website Bookings</h2>
 
     <p class="description">
@@ -427,6 +478,29 @@
 >
     Cancel
 </button>
+</section>
+
+<section class="card">
+    <h2>Google Calendar Clash Check</h2>
+
+    <p class="description">
+        Check whether any website bookings clash with
+        Google Calendar appointments.
+        Website bookings will not be changed.
+    </p>
+
+    <button
+        type="button"
+        class="primary-button"
+        id="checkGoogleClashesButton"
+    >
+        Check for Clashes
+    </button>
+
+    <div id="googleClashResults"
+         style="margin-top: 15px;">
+        Not checked yet.
+    </div>
 </section>
 
 <!-- GOOGLE APPOINTMENT BREAKS -->
@@ -576,10 +650,14 @@ const formTitle =
 
 let availability = [];
 let bookings = [];
+let googleBusy = [];
+let blockedClients = [];
 let editingId = null;
 
 const bookingsList =
     document.getElementById("bookingsList");
+    const blockedClientsList =
+    document.getElementById("blockedClientsList");
     const rescheduleCard =
     document.getElementById("rescheduleCard");
 
@@ -638,7 +716,69 @@ const addBreakOverrideButton =
 const breakOverridesList =
     document.getElementById("breakOverridesList");
 
-let breakOverrides = [];/* =========================
+let breakOverrides = [];
+
+function manualTo24Hour(inputId, periodId) {
+    const value = document.getElementById(inputId).value.trim();
+    const period = document.getElementById(periodId).value;
+
+    const match = /^(0?[1-9]|1[0-2]):([0-5]\d)$/.exec(value);
+
+    if (!match) {
+        throw new Error("Enter a valid time, e.g. 12:30");
+    }
+
+    let hour = Number(match[1]);
+    const minute = match[2];
+
+    if (period === "PM" && hour !== 12) hour += 12;
+    if (period === "AM" && hour === 12) hour = 0;
+
+    return `${String(hour).padStart(2, "0")}:${minute}:00`;
+}
+
+document.getElementById("manualBookingForm")
+    .addEventListener("submit", async (event) => {
+        event.preventDefault();
+        try {
+    manualTo24Hour("manualStart", "manualStartPeriod");
+    manualTo24Hour("manualEnd", "manualEndPeriod");
+} catch (error) {
+    document.getElementById("manualBookingMessage").textContent = error.message;
+    return;
+}
+
+        const button = event.target.querySelector("button");
+        const message = document.getElementById("manualBookingMessage");
+
+        button.disabled = true;
+        button.textContent = "Saving...";
+
+        const { data, error } = await db.rpc("add_manual_booking", {
+            p_date: document.getElementById("manualDate").value,
+        p_start: manualTo24Hour("manualStart", "manualStartPeriod"),
+p_end: manualTo24Hour("manualEnd", "manualEndPeriod"),
+            p_name: document.getElementById("manualClientName").value.trim(),
+            p_treatments: document.getElementById("manualTreatment").value.trim()
+        });
+
+        button.disabled = false;
+        button.textContent = "Save Manual Appointment";
+
+        if (error) {
+            console.error(error);
+            message.textContent = "Couldn't save appointment: " + error.message;
+            message.className = "status-message error";
+            return;
+        }
+
+        message.textContent = "Manual appointment saved!";
+        message.className = "status-message success";
+
+        event.target.reset();
+        await loadBookings();
+    });
+/* =========================
    START ADMIN
 ========================= */
 
@@ -861,11 +1001,115 @@ function convert12To24(hour, minute, period) {
         minute
     );
 }
+function adminTimeToMinutes(time) {
+    if (!time) return null;
 
+    const cleanTime = String(time).trim();
+
+    if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(cleanTime)) {
+        const parts = cleanTime.split(":");
+
+        return (
+            Number(parts[0]) * 60 +
+            Number(parts[1])
+        );
+    }
+
+    const match = cleanTime.match(
+        /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i
+    );
+
+    if (!match) return null;
+
+    let hour = Number(match[1]);
+    const minute = Number(match[2]);
+    const period = match[3].toUpperCase();
+
+    if (period === "PM" && hour !== 12) {
+        hour += 12;
+    }
+
+    if (period === "AM" && hour === 12) {
+        hour = 0;
+    }
+
+    return hour * 60 + minute;
+}
 /* =========================
    LOAD AVAILABILITY
 ========================= */
+async function loadAdminGoogleBusy(
+    startDate,
+    endDate
+) {
+    const endpoint =
+        SUPABASE_URL +
+        "/functions/v1/calendar-busy-slots" +
+        "?start=" +
+        encodeURIComponent(startDate) +
+        "&end=" +
+        encodeURIComponent(endDate);
 
+    const response =
+        await fetch(endpoint);
+
+    if (!response.ok) {
+        throw new Error(
+            "Could not load Google Calendar"
+        );
+    }
+
+    const data =
+        await response.json();
+
+    googleBusy =
+        data.busy || [];
+}
+async function syncGoogleCalendarBooking(payload) {
+    const {
+        data: { session }
+    } = await db.auth.getSession();
+
+    if (!session) {
+        throw new Error(
+            "Admin session is missing."
+        );
+    }
+
+    const response = await fetch(
+        SUPABASE_URL +
+        "/functions/v1/google-calendar-booking",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization":
+                    "Bearer " +
+                    session.access_token,
+                "apikey": SUPABASE_KEY
+            },
+
+            body: JSON.stringify(payload)
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        console.error(
+            "Google Calendar sync failed:",
+            data
+        );
+
+        throw new Error(
+            data.error ||
+            "Google Calendar sync failed."
+        );
+    }
+
+    return data;
+}
 async function loadAvailability() {
     const today =
         new Date().toLocaleDateString(
@@ -1293,7 +1537,79 @@ async function loadBookings() {
     bookings = data || [];
     renderBookings();
 }
+async function loadBlockedClients() {
+    const { data, error } =
+        await db
+            .from("blocked_clients")
+            .select("*")
+            .order("created_at", {
+                ascending: false
+            });
 
+    if (error) {
+        console.error(
+            "Couldn't load blocked clients:",
+            error
+        );
+
+        return;
+    }
+
+blockedClients = data || [];
+renderBlockedClients();
+}
+function renderBlockedClients() {
+    blockedClientsList.innerHTML = "";
+
+    if (blockedClients.length === 0) {
+        blockedClientsList.innerHTML =
+            "<p>No blocked clients.</p>";
+        return;
+    }
+
+    blockedClients.forEach(client => {
+        const card =
+            document.createElement("div");
+
+        card.className = "booking-card";
+
+        const details =
+            document.createElement("div");
+
+        details.innerHTML = `
+            <strong>${client.client_name || "Unknown client"}</strong>
+            <br>
+            ${client.email || "No email"}
+            <br>
+            ${client.phone || "No phone"}
+            <br>
+            <strong>Reason:</strong>
+            ${client.reason || "No reason added"}
+        `;
+
+        const actions =
+            document.createElement("div");
+
+        actions.className = "booking-actions";
+
+        const unblockButton =
+            document.createElement("button");
+
+        unblockButton.type = "button";
+        unblockButton.className = "edit-button";
+        unblockButton.textContent = "Unblock Client";
+
+        unblockButton.onclick =
+            () => unblockClient(client);
+
+        actions.appendChild(unblockButton);
+
+        card.appendChild(details);
+        card.appendChild(actions);
+
+        blockedClientsList.appendChild(card);
+    });
+}
 
 function renderBookings() {
     bookingsList.innerHTML = "";
@@ -1377,7 +1693,59 @@ actions.appendChild(breakButton);
             () => removeBooking(item);
 
         actions.appendChild(deleteButton);
-        card.appendChild(actions);
+
+const blockedClient =
+    blockedClients.find(blocked => {
+        const bookingEmail =
+            item.client_email
+                ? item.client_email.trim().toLowerCase()
+                : "";
+
+        const blockedEmail =
+            blocked.email
+                ? blocked.email.trim().toLowerCase()
+                : "";
+
+        const bookingPhone =
+            item.client_phone
+                ? item.client_phone.replace(/\s+/g, "")
+                : "";
+
+        const blockedPhone =
+            blocked.phone
+                ? blocked.phone.replace(/\s+/g, "")
+                : "";
+
+        return (
+            (bookingEmail &&
+                blockedEmail === bookingEmail) ||
+            (bookingPhone &&
+                blockedPhone === bookingPhone)
+        );
+    });
+
+const blockButton =
+    document.createElement("button");
+
+blockButton.type = "button";
+
+if (blockedClient) {
+    blockButton.className = "edit-button";
+    blockButton.textContent = "Unblock Client";
+
+    blockButton.onclick =
+        () => unblockClient(blockedClient);
+} else {
+    blockButton.className = "delete-button";
+    blockButton.textContent = "Block Client";
+
+    blockButton.onclick =
+        () => blockClient(item);
+}
+
+actions.appendChild(blockButton);
+
+card.appendChild(actions);
 
         bookingsList.appendChild(card);
     });
@@ -1498,6 +1866,206 @@ const newBlockedUntil =
     String(
         blockedMinutes % 60
     ).padStart(2, "0");
+    const workingDay = availability.find(
+    item =>
+        item.availability_date ===
+        rescheduleDate.value
+);
+
+if (!workingDay) {
+    alert(
+        "You don't have availability set for this date."
+    );
+    return;
+}
+
+const workingStart =
+    adminTimeToMinutes(
+        workingDay.start_time
+    );
+
+const workingEnd =
+    adminTimeToMinutes(
+        workingDay.end_time
+    );
+
+if (
+    startMinutes < workingStart ||
+    endMinutes > workingEnd
+) {
+    alert(
+        "This appointment is outside your working hours."
+    );
+    return;
+}
+const websiteClash = bookings.some(
+    booking => {
+        if (
+            booking.id === reschedulingBooking.id ||
+            booking.appointment_date !==
+                rescheduleDate.value
+        ) {
+            return false;
+        }
+
+        const bookedStart =
+            adminTimeToMinutes(
+                booking.appointment_time
+            );
+
+        let bookedEnd;
+
+        if (booking.use_normal_break === false) {
+            bookedEnd =
+                adminTimeToMinutes(
+                    booking.appointment_end_time
+                );
+        } else {
+            bookedEnd =
+                adminTimeToMinutes(
+                    booking.blocked_until
+                );
+        }
+
+        if (
+            bookedStart === null ||
+            bookedEnd === null
+        ) {
+            return false;
+        }
+
+        return (
+            startMinutes < bookedEnd &&
+            blockedMinutes > bookedStart
+        );
+    }
+);
+
+if (websiteClash) {
+    alert(
+        "This time clashes with another website booking."
+    );
+    return;
+}
+try {
+    await loadAdminGoogleBusy(
+        rescheduleDate.value,
+        rescheduleDate.value
+    );
+} catch (error) {
+    console.error(error);
+
+    alert(
+        "Google Calendar couldn't be checked. The booking has not been rescheduled."
+    );
+    return;
+}
+
+const googleClash = googleBusy.some(period => {
+
+    if (period.allDay) {
+        return (
+            rescheduleDate.value >= period.start &&
+            rescheduleDate.value < period.end
+        );
+    }
+
+    if (!period.start || !period.end) {
+        return false;
+    }
+
+    const startDate = new Date(period.start);
+    const endDate = new Date(period.end);
+
+    const formatter =
+        new Intl.DateTimeFormat(
+            "en-GB",
+            {
+                timeZone: "Europe/London",
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                hourCycle: "h23"
+            }
+        );
+
+    const googleStartParts =
+        formatter.formatToParts(startDate);
+
+    const googleEndParts =
+        formatter.formatToParts(endDate);
+
+    const getPart =
+        (parts, type) =>
+            parts.find(
+                part => part.type === type
+            )?.value;
+
+    const googleDate =
+        getPart(googleStartParts, "year") +
+        "-" +
+        getPart(googleStartParts, "month") +
+        "-" +
+        getPart(googleStartParts, "day");
+
+    if (googleDate !== rescheduleDate.value) {
+        return false;
+    }
+
+    const googleStart =
+        Number(
+            getPart(googleStartParts, "hour")
+        ) * 60 +
+        Number(
+            getPart(googleStartParts, "minute")
+        );
+
+    const googleStartTime =
+        String(
+            Number(
+                getPart(
+                    googleStartParts,
+                    "hour"
+                )
+            )
+        ).padStart(2, "0") +
+        ":" +
+        String(
+            Number(
+                getPart(
+                    googleStartParts,
+                    "minute"
+                )
+            )
+        ).padStart(2, "0");
+
+    const breakRemoved =
+        breakOverrides.some(item =>
+            item.appointment_date ===
+                rescheduleDate.value &&
+            item.appointment_time.slice(0, 5) ===
+                googleStartTime
+        );
+
+    const googleEnd =
+    Number(getPart(googleEndParts, "hour")) * 60 +
+    Number(getPart(googleEndParts, "minute")) -
+    (breakRemoved ? 60 : 0);
+
+    return (
+        startMinutes < googleEnd &&
+        blockedMinutes > googleStart
+    );
+});
+
+if (googleClash) {
+    alert(
+        "This time clashes with an appointment in your Google Calendar."
+    );
+    return;
+}
         saveRescheduleButton.disabled =
             true;
 
@@ -1540,7 +2108,27 @@ const newBlockedUntil =
 
             return;
         }
+if (reschedulingBooking.google_event_id) {
+    try {
+        await syncGoogleCalendarBooking({
+            action: "update",
+            eventId: reschedulingBooking.google_event_id,
+            clientName: reschedulingBooking.client_name,
+            clientEmail: reschedulingBooking.client_email,
+            clientPhone: reschedulingBooking.client_phone,
+            treatments: reschedulingBooking.treatments,
+            appointmentDate: rescheduleDate.value,
+            appointmentTime: newTime,
+            appointmentEndTime: newEndTime
+        });
+    } catch (googleError) {
+        console.error(googleError);
 
+        alert(
+            "The website booking was rescheduled, but the Google Calendar appointment couldn't be updated."
+        );
+    }
+}
         reschedulingBooking = null;
 
         rescheduleCard.style.display =
@@ -1569,36 +2157,134 @@ async function toggleBookingBreak(item) {
 
     await loadBookings();
 }
-
-async function removeBooking(item) {
+async function blockClient(item) {
     const confirmed =
         confirm(
-            "Delete this booking for " +
-            formatDisplayDate(
-                item.appointment_date
-            ) +
-            " at " +
-            formatDisplayTime(
-                item.appointment_time
-            ) +
-            "?"
+            "Block " +
+            (item.client_name || "this client") +
+            " from making future bookings?"
         );
 
-    if (!confirmed) return;
+    if (!confirmed) {
+        return;
+    }
+
+   const email =
+    item.client_email
+        ? item.client_email.trim().toLowerCase()
+        : null;
+
+const phone =
+    item.client_phone
+        ? item.client_phone.trim()
+        : null;
+
+    if (!email && !phone) {
+        alert(
+            "This booking has no email or phone number to block."
+        );
+        return;
+    }
+
+    const reason =
+        prompt(
+            "Reason for blocking? This is private and only visible to you.",
+            ""
+        );
 
     const { error } =
         await db
-            .from("bookings")
-            .delete()
-            .eq("id", item.id);
+            .from("blocked_clients")
+            .insert({
+                client_name:
+                    item.client_name || null,
+
+                email: email,
+
+                phone: phone,
+
+                reason:
+                    reason
+                        ? reason.trim()
+                        : null
+            });
 
     if (error) {
         console.error(error);
-        alert("Couldn't delete booking.");
+
+        alert(
+            "Couldn't block this client."
+        );
+
+        return;
+    }
+
+alert(
+    (item.client_name || "Client") +
+    " has been blocked from future bookings."
+);
+
+await loadBlockedClients();
+renderBookings();
+}
+
+async function unblockClient(client) {
+    const confirmed = confirm(
+        "Unblock " + (client.client_name || "this client") + "?"
+    );
+
+    if (!confirmed) return;
+
+    const { error } = await db
+        .from("blocked_clients")
+        .delete()
+        .eq("id", client.id);
+
+    if (error) {
+        console.error(error);
+        alert("Couldn't unblock this client.");
+        return;
+    }
+
+    await loadBlockedClients();
+    renderBookings();
+
+    alert("Client unblocked successfully.");
+}
+
+async function removeBooking(item) {
+    const confirmed = confirm(
+        `Delete booking for ${item.client_name || "Client"}?`
+    );
+
+    if (!confirmed) return;
+
+    const { error } = await db
+        .from("bookings")
+        .delete()
+        .eq("id", item.id);
+
+    if (error) {
+        console.error(error);
+        alert("Couldn't delete booking: " + error.message);
         return;
     }
 
     await loadBookings();
+
+    if (item.google_event_id) {
+        try {
+            await syncGoogleCalendarBooking({
+                action: "delete",
+                eventId: item.google_event_id
+            });
+        } catch (error) {
+            console.error(error);
+            alert("Website booking deleted, but Google Calendar event needs manual removal.");
+        }
+    }
+
+    alert("Booking deleted successfully.");
 }
 
 async function loadBreakOverrides() {
@@ -1762,13 +2448,241 @@ async function startAdmin() {
     }
 
 await loadAvailability();
+await loadBlockedClients();
 await loadBookings();
 await loadBreakOverrides();
 }
 
+
+
+async function checkGoogleClashes() {
+    const results = document.getElementById("googleClashResults");
+    const button = document.getElementById("checkGoogleClashesButton");
+
+    button.disabled = true;
+    results.textContent = "Checking Google Calendar...";
+
+    try {
+        const { data: { session } } = await db.auth.getSession();
+        if (!session) throw new Error("Please log in again.");
+
+        await loadBookings();
+
+        const warnings = [];
+        const dateCache = new Map();
+
+        async function lookup(payload) {
+            const response = await fetch(
+                SUPABASE_URL + "/functions/v1/google-calendar-event-lookup",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + session.access_token,
+                        "apikey": SUPABASE_KEY
+                    },
+                    body: JSON.stringify(payload)
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Calendar lookup failed.");
+            }
+
+            return data.events || [];
+        }
+
+        function londonParts(value) {
+            const parts = new Intl.DateTimeFormat("en-GB", {
+                timeZone: "Europe/London",
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                hourCycle: "h23"
+            }).formatToParts(new Date(value));
+
+            const get = type =>
+                parts.find(part => part.type === type)?.value;
+
+            return {
+                date: `${get("year")}-${get("month")}-${get("day")}`,
+                time: `${get("hour")}:${get("minute")}`
+            };
+        }
+
+        function matchesBookingTime(event, booking) {
+            if (!event.start || !event.end) return false;
+
+            const start = londonParts(event.start);
+            const end = londonParts(event.end);
+
+            return (
+                start.date === booking.appointment_date &&
+                start.time === String(booking.appointment_time).slice(0, 5) &&
+                end.time === String(booking.appointment_end_time).slice(0, 5)
+            );
+        }
+
+        for (const booking of bookings) {
+            const date = booking.appointment_date;
+
+            if (!dateCache.has(date)) {
+                dateCache.set(date, await lookup({ date }));
+            }
+
+            const dayEvents = dateCache.get(date);
+            const savedId = String(booking.google_event_id || "").trim();
+
+            let linkedEvent = savedId
+                ? dayEvents.find(event => event.id === savedId)
+                : null;
+
+            if (savedId && !linkedEvent) {
+                const byId = await lookup({
+                    eventIds: [savedId]
+                });
+
+                linkedEvent =
+                    byId.find(event => event.id === savedId) || null;
+            }
+
+            if (savedId && !linkedEvent) {
+                const treatmentNames = String(booking.treatments || "")
+                    .split(" | ")
+                    .map(name => name.trim().toLowerCase())
+                    .filter(Boolean);
+
+                const candidates = dayEvents.filter(event => {
+                    if (
+                        event.status === "cancelled" ||
+                        event.transparency === "transparent" ||
+                        !matchesBookingTime(event, booking)
+                    ) {
+                        return false;
+                    }
+
+                    const title = String(event.title || "")
+                        .trim()
+                        .toLowerCase();
+
+                    return treatmentNames.some(name => title === name);
+                });
+
+      if (candidates.length === 1) {
+    linkedEvent = candidates[0];
+
+    console.log(
+        "MATCHED GOOGLE EVENT:",
+        booking.client_name,
+        "Saved ID:", savedId,
+        "Actual ID:", linkedEvent.id
+    );
+
+    warnings.push(
+        booking.client_name +
+        ": matching Google appointment found, but the saved event ID needs updating."
+    );
+}
+}
+
+            if (savedId && !linkedEvent) {
+                warnings.push(
+                    booking.client_name +
+                    ": linked Google event not found."
+                );
+            }
+
+            if (
+                linkedEvent?.start &&
+                linkedEvent?.end &&
+                !matchesBookingTime(linkedEvent, booking)
+            ) {
+                warnings.push(
+                    booking.client_name +
+                    ": Google Calendar time differs from website booking."
+                );
+            }
+
+            const bookingStart = adminTimeToMinutes(
+                booking.appointment_time
+            );
+
+            const bookingEnd = adminTimeToMinutes(
+                booking.use_normal_break === false
+                    ? booking.appointment_end_time
+                    : booking.blocked_until || booking.appointment_end_time
+            );
+
+            if (bookingStart === null || bookingEnd === null) {
+                warnings.push(
+                    booking.client_name + ": invalid booking times."
+                );
+                continue;
+            }
+
+            for (const event of dayEvents) {
+                if (linkedEvent && event.id === linkedEvent.id) continue;
+                if (event.status === "cancelled") continue;
+                if (event.transparency === "transparent") continue;
+                if (event.source === "lashd_website") continue;
+                if (!event.start || !event.end) continue;
+
+                const eventStartParts = londonParts(event.start);
+                const eventEndParts = londonParts(event.end);
+
+                if (eventStartParts.date !== date) continue;
+
+                const eventStart = adminTimeToMinutes(
+                    eventStartParts.time
+                );
+
+                const eventEnd = adminTimeToMinutes(
+                    eventEndParts.time
+                );
+
+                if (
+                    eventStart !== null &&
+                    eventEnd !== null &&
+        bookingStart < eventEnd &&
+                    bookingEnd > eventStart
+                ) {
+                    warnings.push(
+                        booking.client_name +
+                        ': clashes with Google Calendar event "' +
+                        event.title + '".'
+                    );
+                }
+            }
+        }
+
+        results.textContent = warnings.length
+            ? "⚠️ " + [...new Set(warnings)].join("\n⚠️ ")
+            : "No Google Calendar clashes or linked-event mismatches found.";
+
+        results.style.whiteSpace = "pre-line";
+
+    } catch (error) {
+        console.error(error);
+        results.textContent = "Error: " + error.message;
+    } finally {
+        button.disabled = false;
+    }
+}
+
+
+
+document.getElementById("checkGoogleClashesButton")
+    .addEventListener("click", checkGoogleClashes);
+
 startAdmin();
 
 </script>
+
+
 
 </body>
 </html>
