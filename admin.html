@@ -1974,26 +1974,16 @@ saveRescheduleButton.disabled =
         saveRescheduleButton.textContent =
             "Saving...";
 
-        const { error } =
-            await db
-                .from("bookings")
-               .update({
-    appointment_date:
-        rescheduleDate.value,
-
-    appointment_time:
-        newTime,
-
-    appointment_end_time:
-        newEndTime,
-
-    blocked_until:
-        newBlockedUntil
-})
-                .eq(
-                    "id",
-                    reschedulingBooking.id
-                );
+       const { error } = await db.rpc(
+    "reschedule_booking_safely",
+    {
+        p_booking_id: reschedulingBooking.id,
+        p_date: rescheduleDate.value,
+        p_start: newTime,
+        p_end: newEndTime,
+        p_blocked_until: newBlockedUntil
+    }
+);
 
         saveRescheduleButton.disabled =
             false;
