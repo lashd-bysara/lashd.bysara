@@ -909,8 +909,7 @@
 let lashdBreakOverrides = [];
 let currentReservationCreated = false;
 
-sessionStorage.removeItem("lashdHoldId");
-sessionStorage.removeItem("lashdBookingSent");
+
 
 async function loadLashdBreakOverrides() {
     const response = await fetch(
@@ -1411,7 +1410,9 @@ async function reserveLashdSlot(clientDetails) {
                 clientName:
                     clientDetails.firstName + " " + clientDetails.lastName,
                 clientEmail: clientDetails.email,
-                clientPhone: clientDetails.phone
+clientPhone: clientDetails.phone,
+instagramHandle: clientDetails.instagram,
+optionalNotes: clientDetails.notes
             })
         }
     );
@@ -1437,6 +1438,7 @@ async function reserveLashdSlot(clientDetails) {
     }
 
     sessionStorage.setItem("lashdHoldId", result.holdId);
+    sessionStorage.setItem("lashdCancelToken", result.cancelToken);
     currentReservationCreated = true;
 
     return result.holdId;
@@ -1923,7 +1925,15 @@ async function reserveLashdSlot(clientDetails) {
     PAY £10 DEPOSIT
     <span>→</span>
 </a>
-
+<button
+    type="button"
+    id="cancelUnpaidBooking"
+    style="display:block; margin:20px auto; padding:12px 18px;
+    background:transparent; border:1px solid #9b8b80;
+    border-radius:4px; color:inherit; cursor:pointer;"
+>
+    CANCEL BOOKING
+</button>
 
                 <p class="deposit-security-note">
                   Payment is completed securely through Stripe.
@@ -2765,6 +2775,7 @@ async function loadLashdGoogleBusy(
                         renderTimes();
 
                         updateDateTimeSummary();
+                        saveLashdDraft("date");
 
                     }
                 );
@@ -3522,16 +3533,13 @@ async function loadLashdGoogleBusy(
                 true;
 
 
-            submitButton.textContent =
-                "SENDING...";
+     submitButton.textContent =
+    "CONTINUING...";
 
 
             try {
 
-                if (!currentReservationCreated) {
-                    await reserveLashdSlot(clientDetails);
-                    await loadLashdBookedSlots();
-                }
+             saveLashdDraft("deposit");
 
       
 
@@ -3591,6 +3599,8 @@ async function loadLashdGoogleBusy(
                         "smooth"
 
                 });
+                submitButton.disabled = false;
+submitButton.innerHTML = originalButtonHTML;
 
             } catch (error) {
 
@@ -3659,53 +3669,374 @@ async function loadLashdGoogleBusy(
     spotDepositButton.removeAttribute("target");
 
     spotDepositButton.addEventListener("click", async event => {
-        event.preventDefault();
+    event.preventDefault();
 
-        const holdId = sessionStorage.getItem("lashdHoldId");
+    if (spotDepositButton.dataset.busy === "1") return;
+
+    spotDepositButton.dataset.busy = "1";
+    spotDepositButton.style.pointerEvents = "none";
+    spotDepositButton.textContent = "OPENING SECURE PAYMENT...";
+
+    try {
+        let holdId = sessionStorage.getItem("lashdHoldId");
+
+        const details = JSON.parse(
+            sessionStorage.getItem("lashdClient") || "null"
+        );
+
+        if (!details || !selectedDate || !selectedTime || !basket.length) {
+            throw new Error("MISSING_BOOKING_DETAILS");
+        }
+
+        const signature = lashdDraftSignature(details);
+
+        if (
+            holdId &&
+            sessionStorage.getItem("lashdHoldSignature") !== signature
+        ) {
+            throw new Error("EXISTING_HOLD_DIFFERENT_DETAILS");
+        }
 
         if (!holdId) {
-            alert("Your booking session has expired. Please start again.");
-            return;
+            holdId = await reserveLashdSlot(details);
+
+            sessionStorage.setItem("lashdHoldSignature", signature);
+            sessionStorage.setItem(
+                "lashdHoldCreatedAt",
+                String(Date.now())
+            );
         }
 
-        spotDepositButton.style.pointerEvents = "none";
-        spotDepositButton.textContent = "OPENING SECURE PAYMENT...";
+        const response = await fetch(
+            LASHD_SUPABASE_URL + "/functions/v1/create-stripe-checkout",
+            {
+                method: "POST",
+                headers: {
+                    "apikey": LASHD_SUPABASE_KEY,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ holdId })
+            }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok || !result.checkoutUrl) {
+            throw new Error(result.error || "PAYMENT_UNAVAILABLE");
+        }
+
+        saveLashdDraft("deposit");
+        window.location.href = result.checkoutUrl;
+
+    } catch (error) {
+        console.error(error);
+
+        const message = String(error.message || "");
+
+        if (
+            message === "SLOT_TAKEN" ||
+            message.includes("BOOKING_SLOT_UNAVAILABLE")
+        ) {
+            alert(
+                "Sorry, this appointment is no longer available. Please choose another time."
+            );
+
+            sessionStorage.removeItem("lashdHoldId");
+            sessionStorage.removeItem("lashdCancelToken");
+            sessionStorage.removeItem("lashdHoldSignature");
+            sessionStorage.removeItem("lashdHoldCreatedAt");
+
+            selectedTime = null;
+            sessionStorage.removeItem("lashdTime");
+
+            saveLashdDraft("date");
+
+            depositSection.style.display = "none";
+            dateTimeSection.style.display = "block";
+
+            try {
+                await loadLashdBookedSlots();
+            } catch (_) {}
+
+            renderCalendar();
+            renderTimes();
+            updateDateTimeSummary();
+
+        } else if (message === "BOOKING_NOT_ACCEPTED") {
+            alert("We’re unable to accept this booking.");
+
+        } else if (message === "EXISTING_HOLD_DIFFERENT_DETAILS") {
+            alert(
+                "Your previous payment attempt is still holding this appointment. Please finish that payment or wait until the hold expires before changing the booking."
+            );
+
+        } else {
+            alert("Unable to open payment. Please try again.");
+        }
+
+        spotDepositButton.dataset.busy = "0";
+        spotDepositButton.style.pointerEvents = "";
+        spotDepositButton.innerHTML =
+            'PAY £10 DEPOSIT <span>→</span>';
+    }
+});
+
+
+const lashdDetailIds = [
+    "clientFirstName",
+    "clientLastName",
+    "clientPhone",
+    "clientEmail",
+    "clientInstagram",
+    "clientNotes"
+];
+document.getElementById("cancelUnpaidBooking")
+    .addEventListener("click", async function () {
+
+        if (!confirm(
+            "Are you sure you want to cancel? Your appointment will be released."
+        )) return;
+
+        const button = this;
+        const holdId = sessionStorage.getItem("lashdHoldId");
+
+        button.disabled = true;
+        button.textContent = "CANCELLING...";
 
         try {
-            const response = await fetch(
-                LASHD_SUPABASE_URL + "/functions/v1/create-stripe-checkout",
-                {
-                    method: "POST",
-                    headers: {
-                        "apikey": LASHD_SUPABASE_KEY,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ holdId })
+            if (holdId) {
+                const response = await fetch(
+                    LASHD_SUPABASE_URL +
+                    "/functions/v1/cancel-booking-hold",
+                    {
+                        method: "POST",
+                        headers: {
+                            "apikey": LASHD_SUPABASE_KEY,
+                            "Content-Type": "application/json"
+                        },
+           body: JSON.stringify({
+    holdId,
+    cancelToken: sessionStorage.getItem("lashdCancelToken")
+})
+                    }
+                );
+
+                const result = await response.json();
+
+                if (!response.ok || !result.cancelled) {
+                    throw new Error(
+                        result.error || "Cancellation failed"
+                    );
                 }
-            );
-
-            const result = await response.json();
-
-            if (!response.ok || !result.checkoutUrl) {
-                throw new Error(result.error || "Payment unavailable");
             }
 
-            window.location.href = result.checkoutUrl;
+       [
+    "lashdHoldId",
+    "lashdCancelToken",
+    "lashdHoldSignature",
+    "lashdHoldCreatedAt",
+                "lashdDraft",
+                "lashdClient",
+                "lashdBasket",
+                "lashdTotal",
+                "lashdDate",
+                "lashdTime",
+                "lashdBookingSent"
+            ].forEach(key => sessionStorage.removeItem(key));
+
+            alert("Your unpaid booking has been cancelled.");
+
+            window.location.replace("booking.html");
 
         } catch (error) {
-            console.error(error);
-            alert(
-                "Unable to open payment. Please try again."
-            );
-
-            spotDepositButton.style.pointerEvents = "";
-            spotDepositButton.innerHTML =
-                'PAY £10 DEPOSIT <span>→</span>';
+            alert(error.message);
+            button.disabled = false;
+            button.textContent = "CANCEL BOOKING";
         }
     });
+function lashdDraftSignature(details) {
+    return JSON.stringify({
+        date: selectedDate ? formatDateKey(selectedDate) : null,
+        time: selectedTime,
+        treatments: basket.map(item => item.name),
+        details
+    });
+}
 
+function saveLashdDraft(step) {
+    const fields = {};
 
+    for (const id of lashdDetailIds) {
+        fields[id] = document.getElementById(id).value;
+    }
 
+    sessionStorage.setItem("lashdDraft", JSON.stringify({
+        basket,
+        date: selectedDate ? formatDateKey(selectedDate) : null,
+        time: selectedTime,
+        fields,
+        policyAgreed: document.getElementById("policyAgreement").checked,
+        step
+    }));
+}
+
+lashdDetailIds.forEach(id => {
+    document.getElementById(id).addEventListener("input", () => {
+        const current = JSON.parse(
+            sessionStorage.getItem("lashdDraft") || "{}"
+        );
+        saveLashdDraft(current.step || "details");
+    });
+});
+
+document.getElementById("policyAgreement").addEventListener("change", () => {
+    const current = JSON.parse(
+        sessionStorage.getItem("lashdDraft") || "{}"
+    );
+    saveLashdDraft(current.step || "details");
+});
+
+treatmentButtons.forEach(button =>
+    button.addEventListener("click", () =>
+        saveLashdDraft("treatments")
+    )
+);
+
+continueButton.addEventListener("click", () =>
+    saveLashdDraft("date")
+);
+
+continueToDetails.addEventListener("click", () =>
+    saveLashdDraft("details")
+);
+
+timeSlots.addEventListener("click", event => {
+    if (event.target.closest(".time-slot")) {
+        saveLashdDraft("date");
+    }
+});
+
+function restoreLashdDraft() {
+    let saved;
+
+    try {
+        saved = JSON.parse(
+            sessionStorage.getItem("lashdDraft") || "null"
+        );
+    } catch (_) {
+        return;
+    }
+
+    if (!saved || !Array.isArray(saved.basket)) return;
+
+    const holdCreatedAt = Number(
+        sessionStorage.getItem("lashdHoldCreatedAt") || 0
+    );
+
+    if (
+        holdCreatedAt &&
+        Date.now() - holdCreatedAt > 39 * 60 * 1000
+    ) {
+        sessionStorage.removeItem("lashdHoldId");
+        sessionStorage.removeItem("lashdCancelToken");
+        sessionStorage.removeItem("lashdHoldSignature");
+        sessionStorage.removeItem("lashdHoldCreatedAt");
+        saved.step = "date";
+    }
+
+    basket = saved.basket.filter(item =>
+        item &&
+        LASHD_TREATMENT_TIMINGS[item.name] &&
+        typeof item.price === "number"
+    );
+
+    treatmentButtons.forEach(button => {
+        const active = basket.some(
+            item => item.name === button.dataset.treatment
+        );
+
+        button.classList.toggle("selected", active);
+        button.querySelector(
+            ".booking-treatment-end span"
+        ).textContent = active ? "ADDED ✓" : "ADD +";
+    });
+
+    updateBasket();
+
+    if (saved.date && /^\d{4}-\d{2}-\d{2}$/.test(saved.date)) {
+        const [y, m, d] = saved.date.split("-").map(Number);
+        const candidate = new Date(y, m - 1, d);
+
+        if (
+            formatDateKey(candidate) === saved.date &&
+            candidate >= today
+        ) {
+            selectedDate = candidate;
+            displayedDate = new Date(y, m - 1, 1);
+            selectedTime = saved.time || null;
+        }
+    }
+
+    for (const id of lashdDetailIds) {
+        document.getElementById(id).value =
+            saved.fields?.[id] || "";
+    }
+
+    document.getElementById("policyAgreement").checked =
+        !!saved.policyAgreed;
+
+    if (!basket.length) return;
+
+    bookingServices.style.display = "none";
+    selectionBar.classList.remove("visible");
+
+    const activeHold = sessionStorage.getItem("lashdHoldId");
+
+    if (
+        selectedDate &&
+        selectedTime &&
+        !activeHold &&
+        !getOpenTimesForDate(selectedDate).includes(selectedTime)
+    ) {
+        selectedTime = null;
+        saved.step = "date";
+    }
+
+    steps.forEach(step => step.classList.remove("active"));
+
+    if (
+        selectedDate &&
+        selectedTime &&
+        saved.step === "deposit"
+    ) {
+        const details = JSON.parse(
+            sessionStorage.getItem("lashdClient") || "null"
+        );
+
+        if (details) {
+            updateDepositSummary(details);
+            depositSection.style.display = "block";
+            steps[3]?.classList.add("active");
+        } else {
+            detailsSection.style.display = "block";
+            updateClientSummary();
+            steps[2]?.classList.add("active");
+        }
+
+    } else if (
+        selectedDate &&
+        selectedTime &&
+        saved.step === "details"
+    ) {
+        updateClientSummary();
+        detailsSection.style.display = "block";
+        steps[2]?.classList.add("active");
+
+    } else {
+        dateTimeSection.style.display = "block";
+        steps[1]?.classList.add("active");
+    }
+}
     /* =====================================================
        START
     ===================================================== */
@@ -3745,8 +4076,10 @@ async function loadLashdGoogleBusy(
         lashdGoogleBusy = [];
     }
 
-    renderCalendar();
-    renderTimes();
+   restoreLashdDraft();
+renderCalendar();
+renderTimes();
+updateDateTimeSummary();
 }
 
 initialiseBooking();
