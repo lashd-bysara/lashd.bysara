@@ -463,6 +463,11 @@
         </div>
     </div>
 
+    <label style="display:flex;align-items:flex-start;gap:10px;text-transform:none;letter-spacing:normal;font-size:13px;line-height:1.5;margin:12px 0;">
+      <input type="checkbox" id="manualCalendarAcknowledgement" style="width:20px;height:20px;min-width:20px;margin:0;">
+      I have entered ALL external appointments in Add Manual Appointment for this date. Google Calendar is disconnected.
+    </label>
+
     <button
         type="button"
         class="primary-button"
@@ -481,7 +486,7 @@
 </section>
 
 <section class="card">
-    <h2>Google Calendar Clash Check</h2>
+    <h2>Google Calendar Clash Check (Disconnected)</h2>
 
     <p class="description">
         Check whether any website bookings clash with
@@ -506,7 +511,7 @@
 <!-- GOOGLE APPOINTMENT BREAKS -->
 
 <section class="card">
-    <h2>Google Appointment Breaks</h2>
+    <h2>Google Appointment Breaks (Disconnected)</h2>
 
     <p class="description">
         Remove the automatic 1-hour break after a specific Google Calendar appointment.
@@ -741,10 +746,13 @@ document.getElementById("manualBookingForm")
     .addEventListener("submit", async (event) => {
         event.preventDefault();
         try {
-    manualTo24Hour("manualStart", "manualStartPeriod");
-    manualTo24Hour("manualEnd", "manualEndPeriod");
+    const manualStart = manualTo24Hour("manualStart", "manualStartPeriod");
+    const manualEnd = manualTo24Hour("manualEnd", "manualEndPeriod");
+    if (manualEnd <= manualStart) throw new Error("Finish time must be later than start time.");
 } catch (error) {
-    document.getElementById("manualBookingMessage").textContent = error.message;
+    const msg = document.getElementById("manualBookingMessage");
+    msg.textContent = error.message;
+    msg.className = "status-message error";
     return;
 }
 
@@ -1753,6 +1761,7 @@ card.appendChild(actions);
 
 function rescheduleBooking(item) {
     reschedulingBooking = item;
+    document.getElementById("manualCalendarAcknowledgement").checked = false;
 
     rescheduleClient.textContent =
         (item.client_name || "Client") +
@@ -1810,6 +1819,14 @@ saveRescheduleButton.addEventListener(
             );
             return;
         }
+
+        if (!document.getElementById("manualCalendarAcknowledgement").checked) {
+            alert("Google Calendar is disconnected. First add all external appointments for the chosen date, then tick the confirmation box.");
+            return;
+        }
+
+        // Refresh bookings before checking for clashes.
+        await loadBookings();
 
         const newTime =
             convert12To24(
@@ -1947,126 +1964,11 @@ if (websiteClash) {
     );
     return;
 }
-try {
-    await loadAdminGoogleBusy(
-        rescheduleDate.value,
-        rescheduleDate.value
-    );
-} catch (error) {
-    console.error(error);
+// Google Calendar is disconnected. External appointments must be entered
+// in Add Manual Appointment, and are included in the bookings clash check.
+// The checkbox above requires explicit confirmation before proceeding.
 
-    alert(
-        "Google Calendar couldn't be checked. The booking has not been rescheduled."
-    );
-    return;
-}
-
-const googleClash = googleBusy.some(period => {
-
-    if (period.allDay) {
-        return (
-            rescheduleDate.value >= period.start &&
-            rescheduleDate.value < period.end
-        );
-    }
-
-    if (!period.start || !period.end) {
-        return false;
-    }
-
-    const startDate = new Date(period.start);
-    const endDate = new Date(period.end);
-
-    const formatter =
-        new Intl.DateTimeFormat(
-            "en-GB",
-            {
-                timeZone: "Europe/London",
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-                hourCycle: "h23"
-            }
-        );
-
-    const googleStartParts =
-        formatter.formatToParts(startDate);
-
-    const googleEndParts =
-        formatter.formatToParts(endDate);
-
-    const getPart =
-        (parts, type) =>
-            parts.find(
-                part => part.type === type
-            )?.value;
-
-    const googleDate =
-        getPart(googleStartParts, "year") +
-        "-" +
-        getPart(googleStartParts, "month") +
-        "-" +
-        getPart(googleStartParts, "day");
-
-    if (googleDate !== rescheduleDate.value) {
-        return false;
-    }
-
-    const googleStart =
-        Number(
-            getPart(googleStartParts, "hour")
-        ) * 60 +
-        Number(
-            getPart(googleStartParts, "minute")
-        );
-
-    const googleStartTime =
-        String(
-            Number(
-                getPart(
-                    googleStartParts,
-                    "hour"
-                )
-            )
-        ).padStart(2, "0") +
-        ":" +
-        String(
-            Number(
-                getPart(
-                    googleStartParts,
-                    "minute"
-                )
-            )
-        ).padStart(2, "0");
-
-    const breakRemoved =
-        breakOverrides.some(item =>
-            item.appointment_date ===
-                rescheduleDate.value &&
-            item.appointment_time.slice(0, 5) ===
-                googleStartTime
-        );
-
-    const googleEnd =
-    Number(getPart(googleEndParts, "hour")) * 60 +
-    Number(getPart(googleEndParts, "minute")) -
-    (breakRemoved ? 60 : 0);
-
-    return (
-        startMinutes < googleEnd &&
-        blockedMinutes > googleStart
-    );
-});
-
-if (googleClash) {
-    alert(
-        "This time clashes with an appointment in your Google Calendar."
-    );
-    return;
-}
-        saveRescheduleButton.disabled =
+saveRescheduleButton.disabled =
             true;
 
         saveRescheduleButton.textContent =
