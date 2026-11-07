@@ -21,68 +21,7 @@
 </head>
 
 <body>
-<!-- TEMPORARY BOOKING PAUSE -->
-<div style="
-    position: fixed;
-    inset: 0;
-    z-index: 999999;
-    background: #f5f0ea;
-   display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 30px;
-    text-align: center;
-">
-    <div style="max-width: 500px;">
-        
-        <p style="
-            font-size: 12px;
-            letter-spacing: 2px;
-            margin-bottom: 18px;
-            color: #8a766b;
-        ">
-            LASH'D. BY SARA
-        </p>
 
-        <h1 style="
-            font-family: Georgia, 'Times New Roman', serif;
-            font-weight: 400;
-            font-size: 42px;
-            color: #4a3c35;
-            margin-bottom: 18px;
-        ">
-            Online booking is<br>
-            <em>temporarily unavailable.</em>
-        </h1>
-
-        <p style="
-            font-size: 15px;
-            line-height: 1.7;
-            color: #806e64;
-            margin-bottom: 28px;
-        ">
-            We're currently updating our online booking system.
-            For now, please message us on TikTok to book your appointment.
-        </p>
-
-        <a
-            href="https://www.tiktok.com/@lashd.bysara"
-            target="_blank"
-            style="
-                display: inline-block;
-                background: #5d463a;
-                color: white;
-                text-decoration: none;
-                padding: 17px 28px;
-                font-size: 12px;
-                letter-spacing: 1.5px;
-            "
-        >
-            BOOK VIA TIKTOK DM →
-        </a>
-
-    </div>
-</div>
     <!-- HEADER -->
 
     <header>
@@ -970,6 +909,9 @@
 let lashdBreakOverrides = [];
 let currentReservationCreated = false;
 
+sessionStorage.removeItem("lashdHoldId");
+sessionStorage.removeItem("lashdBookingSent");
+
 async function loadLashdBreakOverrides() {
     const response = await fetch(
         LASHD_SUPABASE_URL +
@@ -1235,8 +1177,8 @@ const breakRemoved =
 
 const googleEnd =
     Number(getPart(endParts, "hour")) * 60 +
-    Number(getPart(endParts, "minute")) +
-    (breakRemoved ? 0 : 60);
+    Number(getPart(endParts, "minute")) -
+    (breakRemoved ? 60 : 0);
 
         return lashdPeriodsOverlap(
             candidateStart,
@@ -1445,175 +1387,59 @@ function getOpenTimesForDate(date) {
     ];
 }
 
- async function reserveLashdSlot(clientDetails) {
+ 
+async function reserveLashdSlot(clientDetails) {
+    const dateKey = formatDateKey(selectedDate);
+    const startMinutes = lashdTimeToMinutes(selectedTime);
 
-    const timing =
-        getLashdBookingTiming();
-
-    const startMinutes =
-        lashdTimeToMinutes(
-            selectedTime
-        );
-
-    if (
-        startMinutes === null ||
-        timing.duration <= 0
-    ) {
-        throw new Error(
-            "INVALID_BOOKING_TIME"
-        );
+    if (startMinutes === null || basket.length === 0) {
+        throw new Error("INVALID_BOOKING_TIME");
     }
-
-    const appointmentEnd =
-        startMinutes +
-        timing.duration;
-
-    const blockedUntil =
-        appointmentEnd +
-        timing.buffer;
-
-
-    /*
-       One last Google Calendar check immediately
-       before reserving the appointment.
-    */
-
-    const dateKey =
-        formatDateKey(selectedDate);
-
-    await loadLashdGoogleBusy(
-        dateKey,
-        dateKey
-    );
-
-
-    if (
-        lashdGoogleConflict(
-            dateKey,
-            startMinutes,
-            blockedUntil
-        )
-    ) {
-
-        const error =
-            new Error("SLOT_TAKEN");
-
-        error.code =
-            "SLOT_TAKEN";
-
-        throw error;
-    }
-
-
-    /*
-       Ask Supabase to reserve the entire protected
-       period atomically.
-    */
 
     const response = await fetch(
-        LASHD_SUPABASE_URL +
-        "/rest/v1/rpc/reserve_booking_slot",
+        LASHD_SUPABASE_URL + "/functions/v1/create-booking-hold",
         {
             method: "POST",
             headers: {
-                "apikey":
-                    LASHD_SUPABASE_KEY,
-
-                "Content-Type":
-                    "application/json"
+                "apikey": LASHD_SUPABASE_KEY,
+                "Content-Type": "application/json"
             },
-
             body: JSON.stringify({
-
-                p_appointment_date:
-                    dateKey,
-
-                p_appointment_time:
-                    lashdMinutesToDatabaseTime(
-                        startMinutes
-                    ),
-
-                p_appointment_end_time:
-                    lashdMinutesToDatabaseTime(
-                        appointmentEnd
-                    ),
-
-                p_blocked_until:
-                    lashdMinutesToDatabaseTime(
-                        blockedUntil
-                    ),
-
-                p_duration_minutes:
-                    timing.duration,
-
-                p_buffer_minutes:
-                    timing.buffer,
-
-                p_client_name:
-                    clientDetails.firstName +
-                    " " +
-                    clientDetails.lastName,
-
- p_client_email:
-    clientDetails.email,
-
-p_client_phone:
-    clientDetails.phone,
-
-p_treatments:
-    basket
-        .map(item => item.name)
-        .join(" | ")
+                appointmentDate: dateKey,
+                appointmentTime: lashdMinutesToDatabaseTime(startMinutes),
+                treatments: basket.map(item => item.name),
+                clientName:
+                    clientDetails.firstName + " " + clientDetails.lastName,
+                clientEmail: clientDetails.email,
+                clientPhone: clientDetails.phone
             })
         }
     );
 
+    const result = await response.json();
 
     if (!response.ok) {
+        const error = new Error(result.error || "BOOKING_FAILED");
 
-        const errorText =
-            await response.text();
-
-        console.error(
-            "Booking reservation failed:",
-            errorText
-        );
-
-        if (
-            errorText.includes(
-                "BOOKING_SLOT_UNAVAILABLE"
-            )
-        ) {
-
-            const error =
-                new Error("SLOT_TAKEN");
-
-            error.code =
-                "SLOT_TAKEN";
-
-            throw error;
+        if (result.error === "SLOT_TAKEN") {
+            error.code = "SLOT_TAKEN";
         }
-if (
-    errorText.includes(
-        "BOOKING_NOT_ACCEPTED"
-    )
-) {
-    const error =
-        new Error("BOOKING_NOT_ACCEPTED");
 
-    error.code =
-        "BOOKING_NOT_ACCEPTED";
+        if (result.error === "BOOKING_NOT_ACCEPTED") {
+            error.code = "BOOKING_NOT_ACCEPTED";
+        }
 
-    throw error;
-}
-        throw new Error(
-            "Could not reserve booking"
-        );
+        throw error;
     }
 
+    if (!result.holdId) {
+        throw new Error("BOOKING_HOLD_MISSING");
+    }
 
-    currentReservationCreated =
-        true;
+    sessionStorage.setItem("lashdHoldId", result.holdId);
+    currentReservationCreated = true;
+
+    return result.holdId;
 }
 
 
@@ -2086,83 +1912,21 @@ if (
                 </p>
 
 
-                <div class="spot-payment-info">
-
-                    <div class="spot-payment-option">
-
-                        <div class="spot-option-number">
-                            01
-                        </div>
-
-                        <div>
-
-                            <h3>
-                                Apple Pay or Card
-                            </h3>
-
-                            <p>
-                                On the Spot payment page,
-                                choose <strong>Pay by Card</strong>.
-                                You can then use Apple Pay
-                                or enter your card details.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="spot-payment-option">
-
-                        <div class="spot-option-number">
-                            02
-                        </div>
-
-                        <div>
-
-                            <h3>
-                                Pay by Bank
-                            </h3>
-
-                            <p>
-                                If you prefer Spot's bank
-                                payment option, choose
-                                <strong>Pay by Bank</strong>
-                                on the payment page.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="apple-pay-reminder">
-
-                    <strong>USING APPLE PAY?</strong>
-
-                    <span>
-                        Choose “Pay by Card” when Spot opens.
-                    </span>
-
-                </div>
+                
 
 
                 <a
-                    href="https://web.spot-app.co.uk/business-pay/992a92cbch5vWA2hS2K2ME"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="spot-deposit-button"
-                    id="spotDepositButton"
-                >
-                    PAY £10 DEPOSIT
-                    <span>→</span>
-                </a>
+    href="#"
+    class="spot-deposit-button"
+    id="spotDepositButton"
+>
+    PAY £10 DEPOSIT
+    <span>→</span>
+</a>
 
 
                 <p class="deposit-security-note">
-                    Payment is completed securely through Spot.
+                  Payment is completed securely through Stripe.
                 </p>
 
 
@@ -3311,25 +3075,7 @@ async function loadLashdGoogleBusy(
         await loadLashdBookedSlots();
         await loadLashdBreakOverrides();
 
-        if (lashdAvailability.length > 0) {
-
-            const dates =
-                lashdAvailability
-                    .map(
-                        item =>
-                            item.availability_date
-                    )
-                    .sort();
-
-            await loadLashdGoogleBusy(
-                dates[0],
-                dates[dates.length - 1]
-            );
-        } else {
-
-            lashdGoogleBusy = [];
-
-        }
+   lashdGoogleBusy = [];
 
     } catch (error) {
 
@@ -3787,85 +3533,7 @@ async function loadLashdGoogleBusy(
                     await loadLashdBookedSlots();
                 }
 
-                const response =
-                    await fetch(
-                        "https://formspree.io/f/xvkkgejp",
-                        {
-
-                            method:
-                                "POST",
-
-                            headers: {
-
-                                "Content-Type":
-                                    "application/json",
-
-                                "Accept":
-                                    "application/json"
-
-                            },
-
-                            body:
-                                JSON.stringify({
-
-                                    first_name:
-                                        clientDetails.firstName,
-
-                                    last_name:
-                                        clientDetails.lastName,
-
-                                    phone:
-                                        clientDetails.phone,
-
-                                    email:
-                                        clientDetails.email,
-
-                                    instagram:
-                                        clientDetails.instagram ||
-                                        "Not provided",
-
-                                    appointment_notes:
-                                        clientDetails.notes ||
-                                        "None",
-
-                                    treatments:
-                                        treatmentsForEmail,
-
-                                    appointment_date:
-                                        appointmentDate,
-
-                                    appointment_time:
-                                        selectedTime,
-
-                                    treatment_total:
-                                        "£" + total,
-
-                                    deposit_due:
-                                        "£10",
-
-                                    deposit_status:
-                                        "AWAITING £10 DEPOSIT",
-
-                                    remaining_balance:
-                                        "£" +
-                                        Math.max(
-                                            total - 10,
-                                            0
-                                        )
-
-                                })
-
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        "Formspree submission failed"
-                    );
-
-                }
+      
 
 
                 sessionStorage.setItem(
@@ -3876,10 +3544,7 @@ async function loadLashdGoogleBusy(
                 );
 
 
-                sessionStorage.setItem(
-                    "lashdBookingSent",
-                    "true"
-                );
+            
 
 
                 updateDepositSummary(
@@ -3982,28 +3647,63 @@ async function loadLashdGoogleBusy(
     );
 
 
+   
     /* =====================================================
-       SPOT PAYMENT
+       STRIPE PAYMENT
     ===================================================== */
 
     const spotDepositButton =
-        document.getElementById(
-            "spotDepositButton"
-        );
+        document.getElementById("spotDepositButton");
 
+    spotDepositButton.removeAttribute("href");
+    spotDepositButton.removeAttribute("target");
 
-    spotDepositButton.addEventListener("click", () => {
-    sessionStorage.setItem("lashdPaymentStatus", "awaiting-payment");
+    spotDepositButton.addEventListener("click", async event => {
+        event.preventDefault();
 
-    window.open(
-        "https://web.spot-app.co.uk/business-pay/992a92cbch5vWA2hS2K2ME",
-        "_blank"
-    );
+        const holdId = sessionStorage.getItem("lashdHoldId");
 
-    setTimeout(() => {
-        window.location.href = "confirmation.html";
-    }, 1000);
-});
+        if (!holdId) {
+            alert("Your booking session has expired. Please start again.");
+            return;
+        }
+
+        spotDepositButton.style.pointerEvents = "none";
+        spotDepositButton.textContent = "OPENING SECURE PAYMENT...";
+
+        try {
+            const response = await fetch(
+                LASHD_SUPABASE_URL + "/functions/v1/create-stripe-checkout",
+                {
+                    method: "POST",
+                    headers: {
+                        "apikey": LASHD_SUPABASE_KEY,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ holdId })
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || !result.checkoutUrl) {
+                throw new Error(result.error || "Payment unavailable");
+            }
+
+            window.location.href = result.checkoutUrl;
+
+        } catch (error) {
+            console.error(error);
+            alert(
+                "Unable to open payment. Please try again."
+            );
+
+            spotDepositButton.style.pointerEvents = "";
+            spotDepositButton.innerHTML =
+                'PAY £10 DEPOSIT <span>→</span>';
+        }
+    });
+
 
 
     /* =====================================================
@@ -4026,29 +3726,7 @@ async function loadLashdGoogleBusy(
            the dates currently stored as availability.
         */
 
-        if (lashdAvailability.length > 0) {
-
-            const availabilityDates =
-                lashdAvailability
-                    .map(
-                        item =>
-                            item.availability_date
-                    )
-                    .sort();
-
-            const firstDate =
-                availabilityDates[0];
-
-            const lastDate =
-                availabilityDates[
-                    availabilityDates.length - 1
-                ];
-
-            await loadLashdGoogleBusy(
-                firstDate,
-                lastDate
-            );
-        }
+       lashdGoogleBusy = [];
 
     } catch (error) {
 
