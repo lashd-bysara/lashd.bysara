@@ -195,69 +195,41 @@
                 LASH'D. BY SARA
             </p>
 
-            <h1>
-                Nearly<br>
-                <em>Booked.</em>
-            </h1>
+            
+<h1 id="confirmationHeading">
+    Payment<br>
+    <em>Status.</em>
+</h1>
 
-            <p class="confirmation-intro">
-                Your appointment details have been received.
-                Your selected date and time have been reserved while
-                you complete your £10 deposit.
-            </p>
+<p class="confirmation-intro" id="confirmationIntro">
+    We're checking your £10 deposit payment.
+    Please don't make another payment while we verify your booking.
+</p>
 
-            <div class="confirmation-status">
-                <span>BOOKING STATUS</span>
-                <strong>Awaiting £10 Deposit</strong>
-            </div>
+<div class="confirmation-status">
+    <span>BOOKING STATUS</span>
+    <strong id="bookingStatus">
+        Checking payment...
+    </strong>
+</div>
 
-            <div class="confirmation-steps">
 
-                <div class="confirmation-step">
-                    <div class="confirmation-step-number">01</div>
+          
+<div class="confirmation-important" id="confirmationImportant">
+    <strong>PLEASE NOTE</strong>
+    Your appointment is only confirmed once your
+    £10 deposit and booking have been verified.
+</div>
 
-                    <div>
-                        <h3>Complete your £10 deposit</h3>
-                        <p>
-                            Your non-refundable deposit is required
-                            to secure your appointment.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="confirmation-step">
-                    <div class="confirmation-step-number">02</div>
-
-                    <div>
-                        <h3>Your booking will be confirmed</h3>
-                        <p>
-                            Once your deposit has been received,
-                            your appointment can be confirmed.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="confirmation-step">
-                    <div class="confirmation-step-number">03</div>
-
-                    <div>
-                        <h3>Appointment address</h3>
-                        <p>
-                            The exact Manchester M8 address will be
-                            sent the day before your confirmed appointment.
-                        </p>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="confirmation-important">
-                <strong>PLEASE NOTE</strong>
-
-                Opening the Spot payment page does not confirm your
-                appointment. Your £10 deposit must be successfully
-                received before your booking is secured.
-            </div>
+<button
+    id="retryVerification"
+    type="button"
+    class="confirmation-home"
+    style="border:0;cursor:pointer;display:none;"
+    onclick="verifyBooking()"
+>
+    CHECK BOOKING STATUS
+</button>
 
             <a href="index.html" class="confirmation-home">
                 RETURN HOME
@@ -267,6 +239,175 @@
         </section>
 
     </main>
+
+<script>
+const SUPABASE_URL =
+    "https://yiijzymvssapoqlaujhj.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_VA7q3ESd20pZp3rIGVLjDg_kG8ll8PO";
+
+const bookingStatus =
+    document.getElementById("bookingStatus");
+
+const sessionId =
+    new URLSearchParams(window.location.search)
+        .get("session_id");
+
+        const confirmationHeading =
+    document.getElementById("confirmationHeading");
+
+const confirmationIntro =
+    document.getElementById("confirmationIntro");
+
+const confirmationImportant =
+    document.getElementById("confirmationImportant");
+
+function showConfirmed() {
+    confirmationHeading.innerHTML =
+        'Booking<br><em>Confirmed.</em>';
+
+    confirmationIntro.textContent =
+        "Your £10 deposit has been received and your appointment is confirmed. Thank you for booking with LASH'D. by Sara!";
+
+    bookingStatus.textContent = "Booking Confirmed";
+
+    confirmationImportant.innerHTML =
+        "<strong>WHAT HAPPENS NEXT?</strong>" +
+        "Your appointment is secured. Your £10 deposit will be deducted from your treatment total. " +
+        "Your exact Manchester M8 appointment address will be sent the day before your appointment.";
+}
+
+
+const retryButton =
+    document.getElementById("retryVerification");
+
+let checking = false;
+
+function showWaiting() {
+    confirmationHeading.innerHTML =
+        'Thank You!<br><em>One Moment.</em>';
+
+    confirmationIntro.textContent =
+        "We're checking your £10 deposit and finalising your appointment. This usually takes a few seconds.";
+
+    bookingStatus.textContent = "Finalising Your Booking";
+
+    confirmationImportant.innerHTML =
+        "<strong>PLEASE DON'T PAY AGAIN</strong>" +
+        "Your payment is being checked. You can safely check your booking status again below.";
+}
+
+function showDelayed() {
+    confirmationHeading.innerHTML =
+        'Almost<br><em>There.</em>';
+
+    confirmationIntro.textContent =
+        "Your booking confirmation is taking a little longer than expected. Please don't make another payment.";
+
+    bookingStatus.textContent = "Confirmation Still Processing";
+
+    confirmationImportant.innerHTML =
+        "<strong>NEED HELP?</strong>" +
+        "If your confirmation doesn't appear, please contact us so we can check your appointment.";
+
+    retryButton.style.display = "inline-flex";
+}
+
+async function checkBookingPayment() {
+    if (!sessionId) {
+        showDelayed();
+        return true;
+    }
+
+    try {
+        const response = await fetch(
+            SUPABASE_URL + "/functions/v1/booking-payment-status",
+            {
+                method: "POST",
+                headers: {
+                    apikey: SUPABASE_KEY,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ sessionId })
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Verification unavailable");
+        }
+
+        const result = await response.json();
+
+        if (result.status === "confirmed") {
+            showConfirmed();
+            retryButton.style.display = "none";
+            return true;
+        }
+
+        if (result.status === "refunded") {
+            confirmationHeading.innerHTML =
+                'Booking<br><em>Not Confirmed.</em>';
+            confirmationIntro.textContent =
+                "Unfortunately, your appointment couldn't be secured. Your deposit has been refunded.";
+            bookingStatus.textContent = "Refund Issued";
+            retryButton.style.display = "none";
+            return true;
+        }
+
+        if (result.status === "refund_pending") {
+            confirmationHeading.innerHTML =
+                'Booking<br><em>Not Confirmed.</em>';
+            confirmationIntro.textContent =
+                "Unfortunately, your appointment couldn't be secured. Your deposit refund is being processed.";
+            bookingStatus.textContent = "Refund Processing";
+            retryButton.style.display = "none";
+            return true;
+        }
+
+        if (
+            result.status === "not_confirmed" ||
+            result.status === "not_found"
+        ) {
+            showDelayed();
+            return true;
+        }
+
+        return false;
+
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+}
+
+async function verifyBooking() {
+    if (checking) return;
+
+    checking = true;
+    retryButton.style.display = "none";
+    showWaiting();
+
+    try {
+        for (let attempt = 0; attempt < 15; attempt++) {
+            const finished = await checkBookingPayment();
+
+            if (finished) return;
+
+            await new Promise(resolve =>
+                setTimeout(resolve, 2000)
+            );
+        }
+
+        showDelayed();
+    } finally {
+        checking = false;
+    }
+}
+
+verifyBooking();
+
+</script>
 
 </body>
 
